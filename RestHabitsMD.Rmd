@@ -9,4 +9,28 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## BEGIN PROJECT
+## BEGIN PROJECT ##
+
+# import data
+
+# rename variables:
+
+
+# EDA (boxplots, histograms)
+    
+
+
+
+
+
+
+
+
+** data <- tibble (
+              q1 = sample(n, c(...)) run simulations to make fake 
+)
+
+
+
+
+
