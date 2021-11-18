@@ -1,6 +1,6 @@
 ---
 title: "RestHabitsMD"
-author: "Stella Sterling"
+author: "Stella & Lauren"
 date: "11/16/2021"
 output: html_document
 ---
@@ -11,13 +11,49 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## BEGIN PROJECT ##
 
-# import data
+# import data from qualtrics
 
 # rename variables:
+   - remove StartDate - UserLanguage
+   - delete second row with actual questions
+   variables:       rename?       meaning
+    age           |           |   Age of student
+    sex           |           |   Sex of student 
+    race          |           |   Race/ethnicity
+    year          |           |   School Year 
+    gpa_1         |   gpa     |   GPA (should be 0.00 format)
+    
+    degree        |           |   Type of degree
+    undergrad     |           |   
+    grad          |           |
+    combined      |           | hhh
+    *
+    sleepDuration |           |   Duration slept each night
+    sleepEnough   |           |   Is sleepDuration enough sleep? (Y/n)
+    regSleep      |           |   Regular sleep schedule (y/n)
+    sleepCatchUp  |           |   catching up on sleep (y/n)
+    allNighter    |           |   pulled an all nighter 
+    dayTired      |           |   tired during the day (y/n)
+    fallStayAsleep|           |   Issues falling/staying asleep (y/n)
+    sleepDisorder |           |   diagnosed (y/n)
+    
+    
+contingency tables
 
+
+# make fake dataset and run simulations
 
 # EDA (boxplots, histograms)
-    
+
+# visualizations 
+ pie chart (majors? chunk into areas)
+ undergrad vs grad
+ bar graph hours slept
+ 
+
+# try to build model?
+
+# shiny app
 
 
 
