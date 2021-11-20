@@ -12,8 +12,11 @@ knitr::opts_chunk$set(echo = TRUE)
 ## BEGIN PROJECT ##
 
 # import data from qualtrics
+    rest_habits <- readr::read_csv("data.csv", col_names = FALSE)
 
-# rename variables:
+    install.packages(dplyr)
+
+# rename variables: https://www.marsja.se/how-to-rename-column-or-columns-in-r-with-dplyr/#:~:text=How%20do%20I%20rename%20a%20column%20in%20dplyr%20in%20R,A
    - remove StartDate - UserLanguage
    - delete second row with actual questions
    variables:       rename?       meaning
@@ -37,19 +40,68 @@ knitr::opts_chunk$set(echo = TRUE)
     fallStayAsleep|           |   Issues falling/staying asleep (y/n)
     sleepDisorder |           |   diagnosed (y/n)
     
-    
-contingency tables
+    #rest_habits <- rest_habits %>% 
+        rename(gpa_1 = gpa,
+                year = ___)
+
+#contingency tables https://community.rstudio.com/t/how-do-you-convert-a-tidy-data-frame-to-a-contingency-table/99562/2
 
 
 # make fake dataset and run simulations
 
-# EDA (boxplots, histograms)
+# EDA (boxplots, histograms) http://www.sthda.com/english/wiki/ggplot2-box-plot-quick-start-guide-r-software-and-data-visualization
+
+    library(ggplot2)
+    
+#basic boxplot
+    p <- ggplot(rest_habits, aes(x=***, y=***)) +
+    geom_boxplot()
+#change outlier, color, shape, size
+    ggplot(rest_habits, aes(x=***, y=***)) +
+    geom_boxplot(outlier.colour="red", outlier.shape=8, outlier.size=4)
+#change box plot line colors by groups
+    p <- ggplot(rest_habits, aes(x=***, y=***, color=***)) +
+    geom_boxplot()
+#use custom color paletts
+    p+scale_color_manual(values=c("#999999", "#E69F00", "#56B4E9"))
+#boxplot
+    bp + scale_fill_brewer(palette="Dark2")
+#Scatter plot
+    sp + scale_color_brewer(palette="Dark2")
+    
 
 # visualizations 
- pie chart (majors? chunk into areas)
- undergrad vs grad
- bar graph hours slept
+#pie chart https://www.r-graph-gallery.com/piechart-ggplot2.html (majors? chunk into areas)
+    library(ggplot2)
+    
+    #create data
+    data <- data.frame(
+    group=LETTERS[1:5],
+    value=c(13,7,9,21,2)
+    )
  
+    #basic piechart
+    ggplot(data, aes(x="", y=value, fill=group)) +
+     geom_bar(stat="identity", width=1) +
+     coord_polar("y", start=0)
+ 
+ undergrad vs grad
+#Bar chart, bar graph hours slept http://www.sthda.com/english/wiki/ggplot2-barplots-quick-start-guide-r-software-and-data-visualization
+ 
+    library(ggplot2)
+    # Basic barplot
+    p<-ggplot(data=df, aes(x=dose, y=len)) +
+      geom_bar(stat="identity")
+    p
+   
+    # Horizontal bar plot
+    p + coord_flip()
+    # Change the width of bars
+    ggplot(data=df, aes(x=dose, y=len)) +
+    geom_bar(stat="identity", width=0.5)
+    #    Change colors
+    ggplot(data=df, aes(x=dose, y=len)) +
+    geom_bar(stat="identity", color="blue", fill="white")
 
 # try to build model?
 
