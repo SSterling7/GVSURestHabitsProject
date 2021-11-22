@@ -9,27 +9,36 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## BEGIN PROJECT ## hello
+## BEGIN PROJECT ##
 
-# import data from qualtrics
-    rest_habits <- readr::read_csv("data.csv", col_names = FALSE)
+* load packages
 
-    install.packages(dplyr)
+```{r}
+library(tidyverse)
+```
 
-# rename variables: https://www.marsja.se/how-to-rename-column-or-columns-in-r-with-dplyr/#:~:text=How%20do%20I%20rename%20a%20column%20in%20dplyr%20in%20R,A
-   - remove StartDate - UserLanguage
-   - delete second row with actual questions
+* reading in data
+
+```{r}
+rest_habits <- read_csv(here::here("data","412MockData.csv"))
+```
+
+CLEAN DATA
+- delete the extra columns
+- do we need to rename?
+- check for missing/incorrect values (what do we do?)
+
    variables:       rename?       meaning
     age           |           |   Age of student
     sex           |           |   Sex of student 
     race          |           |   Race/ethnicity
     year          |           |   School Year 
     gpa_1         |   gpa     |   GPA (should be 0.00 format)
-    
+    *
     degree        |           |   Type of degree
     undergrad     |           |   
     grad          |           |
-    combined      |           | hhh
+    combined      |           |
     *
     sleepDuration |           |   Duration slept each night
     sleepEnough   |           |   Is sleepDuration enough sleep? (Y/n)
@@ -39,10 +48,36 @@ knitr::opts_chunk$set(echo = TRUE)
     dayTired      |           |   tired during the day (y/n)
     fallStayAsleep|           |   Issues falling/staying asleep (y/n)
     sleepDisorder |           |   diagnosed (y/n)
+    napFreq       |           |   frequency of naps
+    napDuration   |           |   
+    leisureTime   |           |   (y/n)
+    leisureFreq   |           |
+    socialMedia   |           |   (y/n)
+    socMedDuration|           |   
+    academic_1    | academics |   
+    mentalHealth_1| energy    |   
+    mentalHealth_2| stress    | 
+    mentalHealth_3| concentration| 
+    mentalHealth_4| mood      |
     
-    #rest_habits <- rest_habits %>% 
-        rename(gpa_1 = gpa,
-                year = ___)
+(delete unwanted cols/rows)
+
+```{r}
+rest_habits = select(age:mentalHealth_4)
+```
+
+(rename)
+    
+```{r}
+rest_habits <-  rename(rest_habits, gpa = gpa_1)
+```
+
+
+
+
+
+# rename variables: https://www.marsja.se/how-to-rename-column-or-columns-in-r-with-dplyr/#:~:text=How%20do%20I%20rename%20a%20column%20in%20dplyr%20in%20R,A
+
 
 #contingency tables https://community.rstudio.com/t/how-do-you-convert-a-tidy-data-frame-to-a-contingency-table/99562/2
 
