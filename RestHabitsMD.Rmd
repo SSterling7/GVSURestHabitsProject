@@ -20,7 +20,7 @@ library(tidyverse)
 * reading in data
 
 ```{r}
-rest_habits <- read_csv(here::here("data","412MockData.csv"))
+rest_habits_raw <- readr::read_csv(here::here("data","412MockData.csv"))
 ```
 
 CLEAN DATA
@@ -63,13 +63,20 @@ CLEAN DATA
 (delete unwanted cols/rows)
 
 ```{r}
-rest_habits = select(age:mentalHealth_4)
+rest_habits <- rest_habits_raw %>% 
+  select(age:`mentalHealth _4`)
 ```
 
 (rename)
     
 ```{r}
-rest_habits <-  rename(rest_habits, gpa = gpa_1)
+rest_habits %>% 
+  rename(gpa=`gpa _1`,
+         academics=`academic _1`,
+         energy=`mentalHealth _1`,
+         stress=`mentalHealth _2`,
+         concentration=`mentalHealth _3`,
+         mood=`mentalHealth _4`)
 ```
 
 
