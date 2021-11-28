@@ -67,10 +67,16 @@ rest_habits <- rest_habits_raw %>%
   select(age:`mentalHealth _4`)
 ```
 
+```{r}
+rest_habits <- rest_habits [-c(1),]
+```
+
+
+
 (rename)
     
 ```{r}
-rest_habits %>% 
+rest_habits <- rest_habits %>% 
   rename(gpa=`gpa _1`,
          academics=`academic _1`,
          energy=`mentalHealth _1`,
@@ -79,11 +85,10 @@ rest_habits %>%
          mood=`mentalHealth _4`)
 ```
 
-
-
-
-
-# rename variables: https://www.marsja.se/how-to-rename-column-or-columns-in-r-with-dplyr/#:~:text=How%20do%20I%20rename%20a%20column%20in%20dplyr%20in%20R,A
+(convert gpa to numeric value)
+```{r}
+rest_habits$gpa <- as.numeric(rest_habits$gpa)
+```
 
 
 #contingency tables https://community.rstudio.com/t/how-do-you-convert-a-tidy-data-frame-to-a-contingency-table/99562/2
@@ -96,8 +101,15 @@ rest_habits %>%
     library(ggplot2)
     
 #basic boxplot
-    p <- ggplot(rest_habits, aes(x=***, y=***)) +
+```{r}
+ggplot(rest_habits, aes(x=gpa)) + 
     geom_boxplot()
+```
+```{r}
+typeof(rest_habits$gpa)
+```
+
+
 #change outlier, color, shape, size
     ggplot(rest_habits, aes(x=***, y=***)) +
     geom_boxplot(outlier.colour="red", outlier.shape=8, outlier.size=4)
@@ -111,41 +123,34 @@ rest_habits %>%
 #Scatter plot
     sp + scale_color_brewer(palette="Dark2")
     
+    
 
 # visualizations 
 #pie chart https://www.r-graph-gallery.com/piechart-ggplot2.html (majors? chunk into areas)
     library(ggplot2)
+#https://www.r-graph-gallery.com/web-circular-barplot-with-R-and-ggplot2.html
+
     
-    #create data
-    data <- data.frame(
-    group=LETTERS[1:5],
-    value=c(13,7,9,21,2)
-    )
- 
-    #basic piechart
-    ggplot(data, aes(x="", y=value, fill=group)) +
-     geom_bar(stat="identity", width=1) +
-     coord_polar("y", start=0)
+```{r}
+ggplot(rest_habits, aes(x="", y=degree, fill=degree)) +
+  geom_bar(stat="identity", width=1) +
+     coord_polar("y", start=0) +
+  theme_void()
+```
+```{r}
+ggplot(rest_habits, aes(x=degree)) + 
+  geom_bar()
+```
+
  
  undergrad vs grad
 #Bar chart, bar graph hours slept http://www.sthda.com/english/wiki/ggplot2-barplots-quick-start-guide-r-software-and-data-visualization
  
-    library(ggplot2)
-    # Basic barplot
-    p<-ggplot(data=df, aes(x=dose, y=len)) +
-      geom_bar(stat="identity")
-    p
-   
-    # Horizontal bar plot
-    p + coord_flip()
-    # Change the width of bars
-    ggplot(data=df, aes(x=dose, y=len)) +
-    geom_bar(stat="identity", width=0.5)
-    #    Change colors
-    ggplot(data=df, aes(x=dose, y=len)) +
-    geom_bar(stat="identity", color="blue", fill="white")
-
-# try to build model?
+```{r}
+ggplot(rest_habits, aes(x=sleepDuration)) + 
+  geom_bar() +
+  coord_flip()
+```
 
 # shiny app
 
