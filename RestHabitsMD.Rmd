@@ -16,6 +16,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r}
 library(tidyverse)
 library(knitr)
+library(ggmosaic)
 ```
 
 
@@ -111,17 +112,6 @@ rest_habits %>%
   labs(y="Sex", x="Have you been diagnosed with a sleep disorder?", title="Mosaic Plot")
 ```
 
-```{r}
-rest_habits%>%
-  group_by(sex, sleepDisorder)%>%
-  summarise(n=n())%>%
-  spread(sleepDisorder, n)%>%
-  kable()
-```
-
-
-
-
 # make fake dataset and run simulations
 
 # EDA (boxplots, histograms) http://www.sthda.com/english/wiki/ggplot2-box-plot-quick-start-guide-r-software-and-data-visualization
@@ -133,10 +123,6 @@ rest_habits%>%
 ggplot(rest_habits, aes(x=gpa)) + 
     geom_boxplot()
 ```
-```{r}
-typeof(rest_habits$gpa)
-```
-
 
 #change outlier, color, shape, size
     ggplot(rest_habits, aes(x=***, y=***)) +
@@ -165,6 +151,34 @@ ggplot(rest_habits, aes(x="", y=degree, fill=degree)) +
      coord_polar("y", start=0) +
   theme_void()
 ```
+```{r}
+rh <- rest_habits %>% 
+  filter(!is.na(grad)) 
+
+ggplot(rh, aes(x="", y=grad, fill=grad)) +
+  geom_bar(stat="identity", width=1) +
+     coord_polar("y", start=0) +
+  theme_void()
+```
+(group undergrad majors by subject)
+```{r}
+
+```
+
+https://scc.ms.unimelb.edu.au/resources-list/simple-r-scripts-for-analysis/r-scripts
+
+
+
+```{r}
+rhu <- rest_habits %>% 
+  filter(!is.na(undergrad)) 
+
+ggplot(rhu, aes(x="", y=undergrad, fill=undergrad)) +
+  geom_bar(stat="identity", width=1) +
+     coord_polar("y", start=0) +
+  theme_void()
+```
+
 ```{r}
 ggplot(rest_habits, aes(x=degree)) + 
   geom_bar()
