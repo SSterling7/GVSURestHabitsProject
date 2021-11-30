@@ -102,6 +102,7 @@ c_table <-
 
 print.data.frame(c_table)
 ```
+http://analyticswithr.com/contingencytables.html
 (trying contingency table but prettier)
 ```{r contingency kable}
 rest_habits %>%
@@ -111,7 +112,7 @@ rest_habits %>%
   kable()
 
 ```
-
+https://cran.r-project.org/web/packages/ggmosaic/vignettes/ggmosaic.html
 - remove n/a
 ```{r mosaic}
 rest_habits %>% 
