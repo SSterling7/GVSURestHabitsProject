@@ -13,7 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 * load packages
 
-```{r}
+```{r load packages}
 library(tidyverse)
 library(knitr)
 library(ggmosaic)
@@ -22,11 +22,11 @@ library(ggmosaic)
 
 * reading in data
 
-```{r}
+```{r read in data}
 rest_habits_raw <- readr::read_csv(here::here("data","412MockData.csv"))
 ```
 
-CLEAN DATA
+## CLEAN DATA ##
 - delete the extra columns
 - do we need to rename?
 - check for missing/incorrect values (what do we do?)
@@ -64,21 +64,18 @@ CLEAN DATA
     mentalHealth_4| mood      |
     
 (delete unwanted cols/rows)
-
-```{r}
+```{r remove cols}
 rest_habits <- rest_habits_raw %>% 
   select(age:`mentalHealth _4`)
 ```
 
-```{r}
+- remove blank observations
+```{r remove rows}
 rest_habits <- rest_habits [-c(1),]
 ```
 
-
-
-(rename)
     
-```{r}
+```{r rename}
 rest_habits <- rest_habits %>% 
   rename(gpa=`gpa _1`,
          academics=`academic _1`,
@@ -89,37 +86,45 @@ rest_habits <- rest_habits %>%
 ```
 
 (convert gpa to numeric value)
-```{r}
+```{r num gpa}
 rest_habits$gpa <- as.numeric(rest_habits$gpa)
 ```
 
+contingency tables https://community.rstudio.com/t/how-do-you-convert-a-tidy-data-frame-to-a-contingency-table/99562/2
 
-#contingency tables https://community.rstudio.com/t/how-do-you-convert-a-tidy-data-frame-to-a-contingency-table/99562/2
-
-(convert tidy data frame to contingency table)
-```{r}
+(contingency table)
+```{r contingency}
 c_table <-
   rest_habits %>% 
   group_by(sex, sleepDisorder) %>% 
   tally() %>% 
   spread(key = sleepDisorder, value = n)
+
 print.data.frame(c_table)
 ```
-```{r}
+(trying contingency table but prettier)
+```{r contingency kable}
+rest_habits %>%
+  group_by(sex, sleepDisorder) %>%
+  summarize(n=n()) %>%
+  spread(sleepDisorder, n)%>%
+  kable()
+
+```
+
+- remove n/a
+```{r mosaic}
 rest_habits %>% 
   ggplot() +
   geom_mosaic(aes(x=product(sex, sleepDisorder), fill=sex)) +
   labs(y="Sex", x="Have you been diagnosed with a sleep disorder?", title="Mosaic Plot")
 ```
 
-# make fake dataset and run simulations
 
 # EDA (boxplots, histograms) http://www.sthda.com/english/wiki/ggplot2-box-plot-quick-start-guide-r-software-and-data-visualization
-
-    library(ggplot2)
     
 #basic boxplot
-```{r}
+```{r boxplot}
 ggplot(rest_habits, aes(x=gpa)) + 
     geom_boxplot()
 ```
@@ -137,21 +142,19 @@ ggplot(rest_habits, aes(x=gpa)) +
 #Scatter plot
     sp + scale_color_brewer(palette="Dark2")
     
-    
-
 # visualizations 
 #pie chart https://www.r-graph-gallery.com/piechart-ggplot2.html (majors? chunk into areas)
     library(ggplot2)
 #https://www.r-graph-gallery.com/web-circular-barplot-with-R-and-ggplot2.html
 
     
-```{r}
+```{r piechart degree}
 ggplot(rest_habits, aes(x="", y=degree, fill=degree)) +
   geom_bar(stat="identity", width=1) +
      coord_polar("y", start=0) +
   theme_void()
 ```
-```{r}
+```{r piechart grad}
 rh <- rest_habits %>% 
   filter(!is.na(grad)) 
 
@@ -161,15 +164,14 @@ ggplot(rh, aes(x="", y=grad, fill=grad)) +
   theme_void()
 ```
 (group undergrad majors by subject)
-```{r}
+```{r group undergrad majors}
 
 ```
 
 https://scc.ms.unimelb.edu.au/resources-list/simple-r-scripts-for-analysis/r-scripts
 
 
-
-```{r}
+```{r piechart undergrad}
 rhu <- rest_habits %>% 
   filter(!is.na(undergrad)) 
 
@@ -179,7 +181,9 @@ ggplot(rhu, aes(x="", y=undergrad, fill=undergrad)) +
   theme_void()
 ```
 
-```{r}
+do particular degrees/majors sleep less than others?
+
+```{r barchart}
 ggplot(rest_habits, aes(x=degree)) + 
   geom_bar()
 ```
@@ -188,26 +192,15 @@ ggplot(rest_habits, aes(x=degree)) +
  undergrad vs grad
 #Bar chart, bar graph hours slept http://www.sthda.com/english/wiki/ggplot2-barplots-quick-start-guide-r-software-and-data-visualization
  
-```{r}
+```{r bargraph}
 ggplot(rest_habits, aes(x=sleepDuration)) + 
   geom_bar() +
   coord_flip()
 ```
 
-# shiny app
-
-
-
-
-
-
-
 
 ** data <- tibble (
               q1 = sample(n, c(...)) run simulations to make fake 
 )
-
-
-
 
 
