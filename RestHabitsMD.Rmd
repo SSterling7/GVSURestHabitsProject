@@ -15,7 +15,9 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r}
 library(tidyverse)
+library(knitr)
 ```
+
 
 * reading in data
 
@@ -92,6 +94,32 @@ rest_habits$gpa <- as.numeric(rest_habits$gpa)
 
 
 #contingency tables https://community.rstudio.com/t/how-do-you-convert-a-tidy-data-frame-to-a-contingency-table/99562/2
+
+(convert tidy data frame to contingency table)
+```{r}
+c_table <-
+  rest_habits %>% 
+  group_by(sex, sleepDisorder) %>% 
+  tally() %>% 
+  spread(key = sleepDisorder, value = n)
+print.data.frame(c_table)
+```
+```{r}
+rest_habits %>% 
+  ggplot() +
+  geom_mosaic(aes(x=product(sex, sleepDisorder), fill=sex)) +
+  labs(y="Sex", x="Have you been diagnosed with a sleep disorder?", title="Mosaic Plot")
+```
+
+```{r}
+rest_habits%>%
+  group_by(sex, sleepDisorder)%>%
+  summarise(n=n())%>%
+  spread(sleepDisorder, n)%>%
+  kable()
+```
+
+
 
 
 # make fake dataset and run simulations
