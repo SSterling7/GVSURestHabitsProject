@@ -4,7 +4,7 @@ author: "Stella & Lauren"
 date: "11/16/2021"
 output: html_document
 ---
-
+  
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
@@ -29,41 +29,43 @@ rest_habits_raw <- readr::read_csv(here::here("data","412MockData.csv"))
 ## CLEAN DATA ##
 - delete the extra columns
 - do we need to rename?
-- check for missing/incorrect values (what do we do?)
+  - check for missing/incorrect values (what do we do?)
 
-   variables:       rename?       meaning
-    age           |           |   Age of student
-    sex           |           |   Sex of student 
-    race          |           |   Race/ethnicity
-    year          |           |   School Year 
-    gpa_1         |   gpa     |   GPA (should be 0.00 format)
-    *
-    degree        |           |   Type of degree
-    undergrad     |           |   
-    grad          |           |
-    combined      |           |
-    *
-    sleepDuration |           |   Duration slept each night
-    sleepEnough   |           |   Is sleepDuration enough sleep? (Y/n)
-    regSleep      |           |   Regular sleep schedule (y/n)
-    sleepCatchUp  |           |   catching up on sleep (y/n)
-    allNighter    |           |   pulled an all nighter 
-    dayTired      |           |   tired during the day (y/n)
-    fallStayAsleep|           |   Issues falling/staying asleep (y/n)
-    sleepDisorder |           |   diagnosed (y/n)
-    napFreq       |           |   frequency of naps
-    napDuration   |           |   
-    leisureTime   |           |   (y/n)
-    leisureFreq   |           |
-    socialMedia   |           |   (y/n)
-    socMedDuration|           |   
-    academic_1    | academics |   
-    mentalHealth_1| energy    |   
-    mentalHealth_2| stress    | 
-    mentalHealth_3| concentration| 
-    mentalHealth_4| mood      |
-    
-(delete unwanted cols/rows)
+variables:       rename?       meaning
+age           |           |   Age of student
+sex           |           |   Sex of student 
+race          |           |   Race/ethnicity
+year          |           |   School Year 
+gpa_1         |   gpa     |   GPA (should be 0.00 format)
+*
+  degree        |           |   Type of degree
+undergrad     |           |   
+  grad          |           |
+  combined      |           |
+  *
+  sleepDuration |           |   Duration slept each night
+sleepEnough   |           |   Is sleepDuration enough sleep? (Y/n)
+regSleep      |           |   Regular sleep schedule (y/n)
+sleepCatchUp  |           |   catching up on sleep (y/n)
+allNighter    |           |   pulled an all nighter 
+dayTired      |           |   tired during the day (y/n)
+fallStayAsleep|           |   Issues falling/staying asleep (y/n)
+sleepDisorder |           |   diagnosed (y/n)
+napFreq       |           |   frequency of naps
+napDuration   |           |   
+  leisureTime   |           |   (y/n)
+leisureFreq   |           |
+  socialMedia   |           |   (y/n)
+socMedDuration|           |   
+  academic_1    | academics |   
+  mentalHealth_1| energy    |   
+  mentalHealth_2| stress    | 
+  mentalHealth_3| concentration| 
+  mentalHealth_4| mood      |
+  
+  
+  
+  (delete unwanted cols/rows)
 ```{r remove cols}
 rest_habits <- rest_habits_raw %>% 
   select(age:`mentalHealth _4`)
@@ -74,7 +76,7 @@ rest_habits <- rest_habits_raw %>%
 rest_habits <- rest_habits [-c(1),]
 ```
 
-    
+
 ```{r rename}
 rest_habits <- rest_habits %>% 
   rename(gpa=`gpa _1`,
@@ -90,9 +92,15 @@ rest_habits <- rest_habits %>%
 rest_habits$gpa <- as.numeric(rest_habits$gpa)
 ```
 
+```{r}
+readr::write_rds(rest_habits, here::here("RestHabits", "shinydata.rds"))
+```
+
+
 contingency tables https://community.rstudio.com/t/how-do-you-convert-a-tidy-data-frame-to-a-contingency-table/99562/2
 
 (contingency table)
+
 ```{r contingency}
 c_table <-
   rest_habits %>% 
@@ -102,8 +110,10 @@ c_table <-
 
 print.data.frame(c_table)
 ```
+
 http://analyticswithr.com/contingencytables.html
 (trying contingency table but prettier)
+
 ```{r contingency kable}
 rest_habits %>%
   group_by(sex, sleepDisorder) %>%
@@ -112,8 +122,10 @@ rest_habits %>%
   kable()
 
 ```
+
 https://cran.r-project.org/web/packages/ggmosaic/vignettes/ggmosaic.html
 - remove n/a
+
 ```{r mosaic}
 rest_habits %>% 
   ggplot() +
@@ -123,85 +135,78 @@ rest_habits %>%
 
 
 # EDA (boxplots, histograms) http://www.sthda.com/english/wiki/ggplot2-box-plot-quick-start-guide-r-software-and-data-visualization
-    
+
 #basic boxplot
+
 ```{r boxplot}
 ggplot(rest_habits, aes(x=gpa)) + 
-    geom_boxplot()
+  geom_boxplot()
 ```
 
 #change outlier, color, shape, size
-    ggplot(rest_habits, aes(x=***, y=***)) +
-    geom_boxplot(outlier.colour="red", outlier.shape=8, outlier.size=4)
+ggplot(rest_habits, aes(x=***, y=***)) +
+  geom_boxplot(outlier.colour="red", outlier.shape=8, outlier.size=4)
 #change box plot line colors by groups
-    p <- ggplot(rest_habits, aes(x=***, y=***, color=***)) +
-    geom_boxplot()
+p <- ggplot(rest_habits, aes(x=***, y=***, color=***)) +
+  geom_boxplot()
 #use custom color paletts
-    p+scale_color_manual(values=c("#999999", "#E69F00", "#56B4E9"))
+p+scale_color_manual(values=c("#999999", "#E69F00", "#56B4E9"))
 #boxplot
-    bp + scale_fill_brewer(palette="Dark2")
+bp + scale_fill_brewer(palette="Dark2")
 #Scatter plot
-    sp + scale_color_brewer(palette="Dark2")
-    
+sp + scale_color_brewer(palette="Dark2")
+
 # visualizations 
 #pie chart https://www.r-graph-gallery.com/piechart-ggplot2.html (majors? chunk into areas)
-    library(ggplot2)
+library(ggplot2)
 #https://www.r-graph-gallery.com/web-circular-barplot-with-R-and-ggplot2.html
 
-    
-```{r piechart degree}
+
+```{r piechart degree, eval = FALSE}
 ggplot(rest_habits, aes(x="", y=degree, fill=degree)) +
   geom_bar(stat="identity", width=1) +
-     coord_polar("y", start=0) +
+  coord_polar("y", start=0) +
   theme_void()
 ```
-```{r piechart grad}
+
+```{r piechart grad, eval = FALSE}
 rh <- rest_habits %>% 
   filter(!is.na(grad)) 
 
 ggplot(rh, aes(x="", y=grad, fill=grad)) +
   geom_bar(stat="identity", width=1) +
-     coord_polar("y", start=0) +
+  coord_polar("y", start=0) +
   theme_void()
 ```
+
 (group undergrad majors by subject)
+
 ```{r group undergrad majors}
 
 ```
 
 https://scc.ms.unimelb.edu.au/resources-list/simple-r-scripts-for-analysis/r-scripts
 
-
-```{r piechart undergrad}
-rhu <- rest_habits %>% 
-  filter(!is.na(undergrad)) 
-
-ggplot(rhu, aes(x="", y=undergrad, fill=undergrad)) +
-  geom_bar(stat="identity", width=1) +
-     coord_polar("y", start=0) +
-  theme_void()
-```
-
 do particular degrees/majors sleep less than others?
-
+  
 ```{r barchart}
 ggplot(rest_habits, aes(x=degree)) + 
   geom_bar()
 ```
 
- 
- undergrad vs grad
+
+undergrad vs grad
 #Bar chart, bar graph hours slept http://www.sthda.com/english/wiki/ggplot2-barplots-quick-start-guide-r-software-and-data-visualization
- 
+
 ```{r bargraph}
-ggplot(rest_habits, aes(x=sleepDuration)) + 
+ggplot(rest_habits, aes(x=concentration)) + 
   geom_bar() +
   coord_flip()
 ```
 
 
 ** data <- tibble (
-              q1 = sample(n, c(...)) run simulations to make fake 
+  q1 = sample(n, c(...)) run simulations to make fake 
 )
 
 
