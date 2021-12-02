@@ -1,60 +1,55 @@
-#
-# This is a Shiny web application. You can run the application by clicking
-# the 'Run App' button above.
-#
-# Find out more about building applications with Shiny here:
-#
-#    http://shiny.rstudio.com/
-#
 
+# https://mastering-shiny.org/action-layout.html
+# https://shiny.rstudio.com/gallery/
+
+# load packages
 library(shiny)
 library(ggplot2)
 library(dplyr)
 
+# read in data
 rest_habits <- readRDS(here::here("RestHabits/shinydata.rds"))
 
-# Define UI for application that draws a barchart
+# Define UI
 ui <- fluidPage(
-
     # Application title
     titlePanel("Rest Habits at GVSU"),
 
-    # Sidebar with a slider input for number of bins 
+    # Sidebar with options for axis of bar chart graph (ranking selves on mental health)
     sidebarLayout(
         sidebarPanel(
            selectInput(
                inputId = "x",
-               label = "x-axis:",
+               label = "Questions about mental health:",
                choices = c(
-                   "Energy Levels" = "energy",
-                   "Stress Levels" = "stress",
-                   "Concentration Levels" = "concentration",
-                   "Overall Mood" = "mood"
+                   "How would you describe your energy levels?" = "energy",
+                   "How would you describe your stress levels?" = "stress",
+                   "How would you describe your abiility to concentrate?" = "concentration",
+                   "How would you describe your overall mood?" = "mood",
+                   "How do you feel you are doing academically?" = "academics"
                ),
                selected = "stress"
                ),
         ),
          
-        # Show a plot of the generated distribution
+        # Plot bar chart
         mainPanel(
-           plotOutput("BarChart")
+           plotOutput("barChart")
         )
     )
 )
 
-# Define server logic required to draw a histogram
+# Define server
 server <- function(input, output, session) {
-    output$BarChart <- renderPlot({
+    output$barChart <- renderPlot({
         ggplot(rest_habits, aes_string(x=input$x)) + 
             geom_bar() +
             coord_flip()
     })
     
-
-   
 }
 
-# Run the application 
+# Run app
 shinyApp(ui = ui, server = server)
 
 
