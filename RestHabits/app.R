@@ -11,9 +11,9 @@ library(shiny)
 library(ggplot2)
 library(dplyr)
 
-load("shinydata.rds")
+rest_habits <- readRDS(here::here("RestHabits/shinydata.rds"))
 
-# Define UI for application that draws a histogram
+# Define UI for application that draws a barchart
 ui <- fluidPage(
 
     # Application title
@@ -45,7 +45,9 @@ ui <- fluidPage(
 # Define server logic required to draw a histogram
 server <- function(input, output, session) {
     output$BarChart <- renderPlot({
-        ggplot
+        ggplot(rest_habits, aes_string(x=input$x)) + 
+            geom_bar() +
+            coord_flip()
     })
     
 
