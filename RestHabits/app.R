@@ -14,39 +14,53 @@ rest_habits <- readRDS(here::here("RestHabits/shinydata.rds"))
 ui <- fluidPage(
     # Application title
     titlePanel("Rest Habits at GVSU"),
-
-    # Sidebar with options for axis of bar chart graph (ranking selves on mental health)
-    sidebarLayout(
-        sidebarPanel(
-           selectInput(
-               inputId = "x",
-               label = "Questions about mental health:",
-               choices = c(
-                   "How would you describe your energy levels?" = "energy",
-                   "How would you describe your stress levels?" = "stress",
-                   "How would you describe your abiility to concentrate?" = "concentration",
-                   "How would you describe your overall mood?" = "mood",
-                   "How do you feel you are doing academically?" = "academics"
-               ),
-               selected = "stress"
-               ),
-        ),
-         
-        # Plot bar chart
-        mainPanel(
-           plotOutput("barChart")
+    # Plot bar chart
+    mainPanel(
+        tabsetPanel(
+            id = "tabset",
+            tabPanel("Demographics", 
+                     fluidRow(
+                         column(12, plotOutput("gpa_hist"))#plot age vs gpa color by sex
+                     ),
+                     fluidRow(
+                         column(12, "hi")
+                     ),
+                     ),
+            tabPanel("panel 2",
+                     fluidRow(sidebarPanel(                                       #race, sex, year, degree?
+                         selectInput(
+                             inputId = "x",
+                             label = "hi",
+                             choices = c(
+                                 "How would you describe your energy levels?" = "energy",
+                                 "How would you describe your stress levels?" = "stress",
+                                 "How would you describe your abiility to concentrate?" = "concentration",
+                                 "How would you describe your overall mood?" = "mood",
+                                 "How do you feel you are doing academically?" = "academics"
+                                 ),
+                             selected = "stress"
+                             )
+                         )
+                     )
+                     )
+            ),
         )
     )
-)
 
 # Define server
 server <- function(input, output, session) {
-    output$barChart <- renderPlot({
+    output$barChartDem <- renderPlot({
         ggplot(rest_habits, aes_string(x=input$x)) + 
             geom_bar() +
             coord_flip()
     })
-    
+    output$panel <- renderText({
+        paste("Current panel: ", input$tabset)
+    })
+    output$gpa_hist <- renderPlot(
+        ggplot(rest_habits, aes(x=gpa)) +
+            geom_histogram()
+    )
 }
 
 # Run app

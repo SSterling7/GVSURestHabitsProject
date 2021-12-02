@@ -87,13 +87,23 @@ rest_habits <- rest_habits %>%
          mood=`mentalHealth _4`)
 ```
 
-(convert gpa to numeric value)
+(convert age & gpa to numeric value)
+
 ```{r num gpa}
 rest_habits$gpa <- as.numeric(rest_habits$gpa)
+rest_habits$age <- as.numeric(rest_habits$age)
 ```
 
 ```{r}
 readr::write_rds(rest_habits, here::here("RestHabits", "shinydata.rds"))
+```
+
+(plot age gpa sex)
+
+```{r}
+rest_habits %>% 
+  ggplot() +
+  geom_histogram(mapping = aes(x = gpa))
 ```
 
 
