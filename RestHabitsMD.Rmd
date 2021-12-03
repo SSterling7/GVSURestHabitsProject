@@ -85,9 +85,11 @@ rest_habits <- rest_habits_raw %>%
   select(age:`mentalHealth _4`)
 ```
 
-**TO DO** remove blank observations
+**TO DO** remove blank observations?
 
-```{r remove obs}
+- removed first row of questions
+
+```{r remove first row}
 rest_habits <- rest_habits [-c(1),]
 ```
 
@@ -229,6 +231,7 @@ circular bar plot: https://www.r-graph-gallery.com/web-circular-barplot-with-R-a
 
 analysis? https://scc.ms.unimelb.edu.au/resources-list/simple-r-scripts-for-analysis/r-scripts
 
+themes https://ggplot2.tidyverse.org/reference/ggtheme.html
 
 
 
