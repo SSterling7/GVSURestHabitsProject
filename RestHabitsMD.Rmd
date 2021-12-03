@@ -146,10 +146,10 @@ rest_habits %>%
   kable()
 ```
 
-**TO DO** remove n/a
 
 ```{r mosaic}
 rest_habits %>% 
+  filter(!is.na(sleepDisorder)) %>% 
   ggplot() +
   geom_mosaic(aes(x=product(sex, sleepDisorder), fill=sex)) +
   labs(y="Sex", x="Have you been diagnosed with a sleep disorder?", title="Mosaic Plot")
@@ -172,10 +172,9 @@ ggplot(rest_habits, aes(x="", y=degree, fill=degree)) +
 
 
 ```{r piechart grad, eval = FALSE}
-rh <- rest_habits %>% 
-  filter(!is.na(grad)) 
-
-ggplot(rh, aes(x="", y=grad, fill=grad)) +
+rest_habits %>% 
+  filter(!is.na(grad)) %>% 
+  ggplot(aes(x="", y=grad, fill=grad)) + 
   geom_bar(stat="identity", width=1) +
   coord_polar("y", start=0) +
   theme_void()
