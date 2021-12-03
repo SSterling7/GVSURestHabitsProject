@@ -6,6 +6,7 @@
 library(shiny)
 library(ggplot2)
 library(dplyr)
+library(rsconnect) # ? needed
 
 # read in data
 rest_habits <- readRDS(here::here("RestHabits/shinydata.rds"))
@@ -20,17 +21,18 @@ ui <- fluidPage(
             id = "tabset",
             tabPanel("Demographics", 
                      fluidRow(
-                         column(12, plotOutput("gpa_hist"))#plot age vs gpa color by sex
+                         column(12, plotOutput("gpa_hist"))
                      ),
                      fluidRow(
                          column(12, "hi")
                      ),
                      ),
-            tabPanel("panel 2",
-                     fluidRow(sidebarPanel(                                       #race, sex, year, degree?
+            tabPanel("Mental Health and Academics",
+                     fluidRow(
+                         sidebarPanel(
                          selectInput(
                              inputId = "x",
-                             label = "hi",
+                             label = "Select question:",
                              choices = c(
                                  "How would you describe your energy levels?" = "energy",
                                  "How would you describe your stress levels?" = "stress",
@@ -39,8 +41,9 @@ ui <- fluidPage(
                                  "How do you feel you are doing academically?" = "academics"
                                  ),
                              selected = "stress"
-                             )
-                         )
+                             ),
+                         ),
+                         mainPanel(plotOutput("barChart"))
                      )
                      )
             ),
@@ -49,7 +52,7 @@ ui <- fluidPage(
 
 # Define server
 server <- function(input, output, session) {
-    output$barChartDem <- renderPlot({
+    output$barChart <- renderPlot({
         ggplot(rest_habits, aes_string(x=input$x)) + 
             geom_bar() +
             coord_flip()
