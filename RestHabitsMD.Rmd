@@ -200,6 +200,39 @@ ggplot(rest_habits, aes(x=concentration)) +
   coord_flip()
 ```
 
+```{r average grad gpa)}
+circle_grad <- rest_habits %>%
+  filter(!is.na(gpa)) %>% 
+  group_by(degree) %>% 
+  summarise(
+    avg_gpa = mean(gpa),
+    num_resp = n()
+  ) %>% 
+  mutate(avg_gpa = round(avg_gpa, digits = 2),
+         num_resp= round(num_resp, digits = 0))
+```
+
+```{r circle bar chart (grad degree vs. gpa)}
+circle_grad %>% 
+  ggplot(aes(x=degree, y=avg_gpa)) +
+  geom_hline(
+    aes(yintercept = y), 
+    data.frame(y = c(0:4)),
+    color = "lightgrey"
+  ) +
+  geom_col(aes(
+      x = reorder(str_wrap(degree, 5), avg_gpa),
+      y = avg_gpa,
+      fill = num_resp
+    ),
+    position = "dodge2",
+    show.legend = TRUE,
+    alpha = .9
+  ) 
+```
+
+
+
 
 ### QUESTIONS I HAVE
 
@@ -210,6 +243,18 @@ ggplot(rest_habits, aes(x=concentration)) +
 - do those who nap tend to have higher gpa/academic rating?
 
 - do students think that the amount they sleep each night is enough?
+
+- do students who pull all-nighters have a lower gpa/academics?
+
+- which majors have less leisure time?
+
+- leisure time vs. gpa?
+
+- gpa vs. academics?
+
+- no leisure time vs. time on social media?
+
+- nap freq/duration vs. energy?
 
 
 
