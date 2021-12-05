@@ -234,7 +234,7 @@ circle_grad %>%
 
 
 
-### QUESTIONS I HAVE
+### QUESTIONS
 
 - do particular degrees/majors sleep less than others?
 
