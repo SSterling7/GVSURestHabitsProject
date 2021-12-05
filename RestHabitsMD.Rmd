@@ -118,6 +118,9 @@ rest_habits$age <- as.numeric(rest_habits$age)
 readr::write_rds(rest_habits, here::here("RestHabits", "shinydata.rds"))
 ```
 
+**TODO** if statements to sort majors? get rid of n/a's
+
+
 ### MESSING WITH VISUALIZATIONS
 
 ```{r gpa histogram}
@@ -150,11 +153,15 @@ rest_habits %>%
 
 
 ```{r mosaic}
+#trying to change order
+level_order <- c('Less than 5 hours.', '5-6 hours.', '6-7 hours.', '7-8 hours.', '9-10 hours.', 'More than 10 hours.')
+#ggplot(rest_habits, aes(x = factor(sleepDuration, level = level_order), y = degree)) + geom_col()
+
 rest_habits %>% 
-  filter(!is.na(sleepDisorder)) %>% 
+  filter(!is.na(sleepDuration)) %>% 
   ggplot() +
-  geom_mosaic(aes(x=product(sex, sleepDisorder), fill=sex)) +
-  labs(y="Sex", x="Have you been diagnosed with a sleep disorder?", title="Mosaic Plot")
+  geom_mosaic(aes(x=product(factor(sleepDuration, level=level_order), degree), fill=sleepDuration)) +
+  labs(y="Duration of sleep each night", x="Type of Degree", title="Mosaic Plot")
 ```
 
  - basic boxplot? even need or just stick to hist?
@@ -278,6 +285,10 @@ analysis? https://scc.ms.unimelb.edu.au/resources-list/simple-r-scripts-for-anal
 
 themes https://ggplot2.tidyverse.org/reference/ggtheme.html
 
+
+### ideas for grouping
+
+https://tme.uconn.edu/explore-majors/groups/
 
 
 ### random shit
