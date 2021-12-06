@@ -7,6 +7,7 @@ library(shiny)
 library(ggplot2)
 library(dplyr)
 library(rsconnect) # ? needed
+library(ggmosaic)
 
 # read in data
 rest_habits <- readRDS(here::here("RestHabits/shinydata.rds"))
@@ -38,17 +39,7 @@ ui <- fluidPage(
             
             tabPanel("Sleep",
                      fluidRow(
-                         sidebarPanel(
-                             selectInput(
-                                 inputId = "y",
-                                 label = "Select:",
-                                 choices = c(
-                                     "Type of Degree" = "degree",
-                                     "Do they think they get enough sleep?" = "sleepEnough"),
-                                 selected = "degree"
-                             ),
-                         ),
-                         mainPanel(plotOutput("SleepDur_degreeEnough")),
+                         mainPanel(plotOutput("sleepDur_enough")),
                      ),
                      fluidRow(
                          sidebarPanel(
@@ -68,14 +59,25 @@ ui <- fluidPage(
                      ),
                      
                      fluidRow(
-                         column(12, "nap vs academics/gpa")
+                         sidebarPanel(
+                             selectInput(
+                                 inputId = "y",
+                                 label = "Select question:",
+                                 choices = c(
+                                     "How would you describe your energy levels?" = "energy",
+                                     "How would you describe your stress levels?" = "stress",
+                                     "How would you describe your ability to concentrate?" = "concentration",
+                                     "How would you describe your overall mood?" = "mood",
+                                     "How do you feel you are doing academically?" = "academics"),
+                                 selected = "energy"
+                             ),
+                         ),
+                         mainPanel(plotOutput("Nap_healthAcad")),
                      ),
+                         
+                    
                      fluidRow(
-                         column(12, "nap vs energy (or others)")
-                     ),
-                     
-                     fluidRow(
-                         column(12, "all nighters vs academics/gpa")
+                         mainPanel(plotOutput("AllNighter_Acad")),
                      )
                      ),
             
@@ -121,16 +123,35 @@ server <- function(input, output, session) {
             #coord_flip()
     })
     
-    output$SleepDur_degreeEnough <- renderPlot({
-            ggplot(rest_habits, aes_string(x=input$y)) +
-            geom_mosaic(aes(x=product(sleepDuration, x), fill=sleepDuration))
+    output$sleepDur_enough <- renderPlot({
+        rest_habits %>% 
+            filter(!is.na(sleepDuration)) %>% 
+            ggplot() +
+            geom_mosaic(aes(x=product(sleepDuration, sleepEnough), fill=sleepDuration))
     })
     
     output$SleepDur_healthAcad <- renderPlot({
-            ggplot(rest_habits, aes_string(x=input$z)) + 
-            geom_bar() +
-            coord_flip() +
-            labs(y="Duration Slept Each Night")
+        rest_habits %>% 
+            filter(!is.na(sleepDuration)) %>% 
+            filter(!is.na(academics)) %>% 
+            ggplot(aes_string(x = input$z)) + 
+            geom_bar(aes(fill = sleepDuration), position = "dodge")
+    })
+    
+    output$Nap_healthAcad <- renderPlot({
+        rest_habits %>% 
+            filter(!is.na(napFreq)) %>% 
+            filter(!is.na(academics)) %>% 
+            ggplot(aes_string(x = input$y)) + 
+            geom_bar(aes(fill = napFreq), position = "dodge")
+    })
+    
+    output$AllNighter_Acad <- renderPlot({
+        rest_habits %>% 
+            filter(!is.na(academics)) %>% 
+            filter(!is.na(allNighter)) %>% 
+            ggplot() +
+            geom_mosaic(aes(x=product(allNighter, academics), fill=allNighter))
     })
 }
 

@@ -238,6 +238,13 @@ circle_grad %>%
   ) 
 ```
 
+```{r}
+ rest_habits %>% 
+            filter(!is.na(sleepDuration)) %>% 
+            ggplot(aes(x = energy, fill = sleepDuration)) + 
+            geom_bar(position = "dodge")
+```
+
 
 
 
@@ -318,3 +325,10 @@ sp + scale_color_brewer(palette="Dark2")
 data <- tibble (
   q1 = sample(n, c(...)) run simulations to make fake 
 )
+
+
+
+
+- ordering of axis 
+- grouping majors 
+
