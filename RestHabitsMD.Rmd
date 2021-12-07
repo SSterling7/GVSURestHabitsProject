@@ -73,10 +73,6 @@ Rundown of variables:
 |`mentalHealth_2` (stress)       | stress levels
 |`mentalHealth_3` (concentration)| ability to concentrate
 |`mentalHealth_4` (mood)         | overall mood
-  
-  
-**TO DO** how to deal with undergrad? groups?
-
 
 - delete unwanted cols/rows
   
@@ -112,27 +108,47 @@ rest_habits$gpa <- as.numeric(rest_habits$gpa)
 rest_habits$age <- as.numeric(rest_habits$age)
 ```
 
+
+```{r group grad majors}
+#should I instead add categories to new column within rest habits?
+
+gradCat <- rest_habits %>%
+  filter(!is.na(grad)) %>% 
+  select(grad) %>% 
+  add_column(category = NA)
+
+gradCat %>%
+  mutate(category = case_when(
+     grad %in% c("Communications", "Business Administration") ~ "busLeg", #Business & Legal
+     grad == "" ~ "cultHum", #Cultures and Humanities
+     grad == "" ~ "science", #Biological, Environmental, and Physical Sciences
+     grad %in% c("Education", "Higher Education") ~ "education", #Education
+     grad == "" ~ "art", #Fine Arts and Design
+     grad %in% c("Physician Assistant Studies", "Medical Dosimetry", "Public Health", "Physical Therapy") ~ "health", #Health and Medicine
+     grad %in% c("Biostatistics", "Data Science and Analytics") ~ "mathEng", #Math and Engineering
+     grad %in% c("Speech-Language Pathology", "Social Work") ~ "socBehave")#Social and Behavioral Sciences)
+  )
+```
+
+
+```{r define levels}
+levels_sleepDur = c('Less than 5 hours.', '5-6 hours.', '6-7 hours.', '7-8 hours.', '9-10 hours.', 'More than 10 hours.')
+
+levels_acad = c('Bad', 'Not Good', 'Ok', 'Good', 'Great') # for acad & mental health
+```
+
+
+```{r factor levels}
+rest_habits %>% 
+  mutate(sleepDuration = factor(sleepDuration, levels = levels_sleepDur)) %>% 
+  mutate(across(c(academics, concentration, mood, stress, energy), ~factor(., levels = levels_acad)))
+```
+
 *writing out cleaned dataset for shiny app*
 
-```{r}
+```{r output for shiny}
 readr::write_rds(rest_habits, here::here("RestHabits", "shinydata.rds"))
 ```
-
-**TODO** if statements to sort majors? get rid of n/a's
-
-
-```{r}
-level_sleepDur = c('Less than 5 hours.', '5-6 hours.', '6-7 hours.', '7-8 hours.', '9-10 hours.', 'More than 10 hours.')
-##across function
-level_acad = c('Bad', 'Not Good', 'Ok', 'Good', 'Great')
-```
-
-```{r}
-rest_habits %>% 
-  mutate(sleepDuration = factor(sleepDuration, levels = level_sleepDur)) %>% 
-  mutate(across(c(academics, concentration, mood, stress, energy), ~factor(., levels = level_acad)))
-```
-
 
 
 ### MESSING WITH VISUALIZATIONS
@@ -145,7 +161,7 @@ rest_habits %>%
 
 **TO DO** what vars do we want 4 realsies?
 
-```{r contingency name?}
+```{r contingency table}
 c_table <-
   rest_habits %>% 
   group_by(sex, sleepDisorder) %>% 
@@ -169,7 +185,6 @@ rest_habits %>%
 ```{r mosaic}
 rest_habits %>% 
   filter(!is.na(sleepDuration)) %>% 
-  mutate(sleepDuration = factor(sleepDuration, levels = level_sleepDur)) %>% 
   ggplot() +
   geom_mosaic(aes(x=product(sleepDuration, degree), fill=sleepDuration)) +
   labs(y="Duration of sleep each night", x="Type of Degree", title="Mosaic Plot")
@@ -183,52 +198,11 @@ ggplot(rest_habits, aes(x=gpa)) +
 ```
 
 
-```{r piechart degree, eval = FALSE}
-ggplot(rest_habits, aes(x="", y=degree, fill=degree)) +
-  geom_bar(stat="identity", width=1) +
-  coord_polar("y", start=0) +
-  theme_void()
-```
-
-
-```{r piechart grad, eval = FALSE}
-rest_habits %>% 
-  filter(!is.na(grad)) %>% 
-  ggplot(aes(x="", y=grad, fill=grad)) + 
-  geom_bar(stat="identity", width=1) +
-  coord_polar("y", start=0) +
-  theme_void()
-```
-
-(group undergrad majors by subject) **HOW**
-
-```{r group undergrad majors}
-## var %in% c("..", "..")
-
-gradCat <- rest_habits %>%
-  filter(!is.na(grad)) %>% 
-  select(grad) %>% 
-  add_column(category = NA)
-
-gradCat %>% #do i have to write grad == every time
-  mutate(category = case_when(
-     grad == "Communications" ~ "busLeg", #Business & Legal
-     grad == "" ~ "cultHum", #Cultures and Humanities
-     grad == "" ~ "science", #Biological, Environmental, and Physical Sciences
-     grad == "Education" || "Higher Education" ~ "education", #Education
-     grad == "" ~ "art", #Fine Arts and Design
-     grad == "Physician Assistant Studies" || "Medical Dosimetry" || "Public Health" || "Physical Therapy" ~ "health", #Health and Medicine
-     grad == "Biostatistics" || "Data Science and Analytics" ~ "mathEng", #Math and Engineering
-     grad == "Speech-Language Pathology" || "Social Work" ~ "socBehave")#Social and Behavioral Sciences)
-  )
-
-```
-  
-
 ```{r bar chart degree}
 ggplot(rest_habits, aes(x=degree)) + 
   geom_bar()
 ```
+
 
 ```{r bar chart concentration}
 rest_habits %>% 
@@ -238,27 +212,13 @@ rest_habits %>%
   coord_flip()
 ```
 
-```{r average grad gpa)}
-circle_grad <- rest_habits %>%
-  filter(!is.na(gpa)) %>% 
-  group_by(degree) %>% 
-  summarise(
-    avg_gpa = mean(gpa),
-    num_resp = n()
-  ) %>% 
-  mutate(avg_gpa = round(avg_gpa, digits = 2),
-         num_resp= round(num_resp, digits = 0))
-```
 
-
-```{r}
+```{r bar chart energy vs sleep dur.}
  rest_habits %>% 
             filter(!is.na(sleepDuration)) %>% 
             ggplot(aes(x = energy, fill = sleepDuration)) + 
             geom_bar(position = "dodge")
 ```
-
-
 
 
 ### QUESTIONS
@@ -284,7 +244,6 @@ circle_grad <- rest_habits %>%
 - nap freq/duration vs. energy?
 
 
-
 ### SOURCES
 
 contingency tables: https://community.rstudio.com/t/how-do-you-convert-a-tidy-data-frame-to-a-contingency-table/99562/2
@@ -297,8 +256,6 @@ bar charts: http://www.sthda.com/english/wiki/ggplot2-barplots-quick-start-guide
 
 mosaic plots: https://cran.r-project.org/web/packages/ggmosaic/vignettes/ggmosaic.html
 
-pie chart: https://www.r-graph-gallery.com/piechart-ggplot2.html
-
 circular bar plot: https://www.r-graph-gallery.com/web-circular-barplot-with-R-and-ggplot2.html looks cool af
 
 analysis? https://scc.ms.unimelb.edu.au/resources-list/simple-r-scripts-for-analysis/r-scripts
@@ -306,12 +263,7 @@ analysis? https://scc.ms.unimelb.edu.au/resources-list/simple-r-scripts-for-anal
 themes https://ggplot2.tidyverse.org/reference/ggtheme.html
 
 
-### ideas for grouping
-
-https://tme.uconn.edu/explore-majors/groups/
-
-
-### random shit
+###  RANDOM BRAINSTORM
 
 - change outlier, color, shape, size
 
@@ -338,10 +290,3 @@ sp + scale_color_brewer(palette="Dark2")
 data <- tibble (
   q1 = sample(n, c(...)) run simulations to make fake 
 )
-
-hello
-
-
-- ordering of axis 
-- grouping majors 
-
