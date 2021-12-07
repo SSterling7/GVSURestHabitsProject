@@ -123,9 +123,15 @@ readr::write_rds(rest_habits, here::here("RestHabits", "shinydata.rds"))
 
 ```{r}
 level_sleepDur = c('Less than 5 hours.', '5-6 hours.', '6-7 hours.', '7-8 hours.', '9-10 hours.', 'More than 10 hours.')
+##across function
 level_acad = c('Bad', 'Not Good', 'Ok', 'Good', 'Great')
 ```
 
+```{r}
+rest_habits %>% 
+  mutate(sleepDuration = factor(sleepDuration, levels = level_sleepDur)) %>% 
+  mutate(across(c(academics, concentration, mood, stress, energy), ~factor(., levels = level_acad)))
+```
 
 
 
@@ -197,6 +203,7 @@ rest_habits %>%
 (group undergrad majors by subject) **HOW**
 
 ```{r group undergrad majors}
+## var %in% c("..", "..")
 
 gradCat <- rest_habits %>%
   filter(!is.na(grad)) %>% 
