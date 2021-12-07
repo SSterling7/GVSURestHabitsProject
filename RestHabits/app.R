@@ -133,7 +133,9 @@ server <- function(input, output, session) {
     output$SleepDur_healthAcad <- renderPlot({
         rest_habits %>% 
             filter(!is.na(sleepDuration)) %>% 
-            filter(!is.na(academics)) %>% 
+            filter(!is.na(input$z)) %>% 
+            mutate(sleepDuration = factor(sleepDuration, levels = level_sleepDur)) %>%
+            mutate(input$z = factor(input$z, levels = level_acad)) %>%
             ggplot(aes_string(x = input$z)) + 
             geom_bar(aes(fill = sleepDuration), position = "dodge")
     })
