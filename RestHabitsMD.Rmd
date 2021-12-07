@@ -193,6 +193,23 @@ rest_habits %>%
 
 ```{r group undergrad majors}
 
+gradCat <- rest_habits %>%
+  filter(!is.na(grad)) %>% 
+  select(grad) %>% 
+  add_column(category = NA)
+
+gradCat %>% #do i have to write grad == every time
+  mutate(category = case_when(
+     grad == "Communications" ~ "busLeg", #Business & Legal
+     grad == "" ~ "cultHum", #Cultures and Humanities
+     grad == "" ~ "science", #Biological, Environmental, and Physical Sciences
+     grad == "Education" || "Higher Education" ~ "education", #Education
+     grad == "" ~ "art", #Fine Arts and Design
+     grad == "Physician Assistant Studies" || "Medical Dosimetry" || "Public Health" || "Physical Therapy" ~ "health", #Health and Medicine
+     grad == "Biostatistics" || "Data Science and Analytics" ~ "mathEng", #Math and Engineering
+     grad == "Speech-Language Pathology" || "Social Work" ~ "socBehave")#Social and Behavioral Sciences)
+  )
+
 ```
   
 
