@@ -134,8 +134,6 @@ server <- function(input, output, session) {
         rest_habits %>% 
             filter(!is.na(sleepDuration)) %>% 
             filter(!is.na(input$z)) %>% 
-            mutate(sleepDuration = factor(sleepDuration, levels = level_sleepDur)) %>%
-            mutate(input$z = factor(input$z, levels = level_acad)) %>%
             ggplot(aes_string(x = input$z)) + 
             geom_bar(aes(fill = sleepDuration), position = "dodge")
     })
