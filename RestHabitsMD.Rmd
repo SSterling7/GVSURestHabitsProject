@@ -22,7 +22,7 @@ library(ggmosaic)
 **reading in data**
 
 ```{r read data}
-rest_habits_raw <- readr::read_csv(here::here("data","412MockData.csv"))
+rest_habits_raw <- readr::read_csv(here::here("data","418FinalProjData.csv"))
 ```
 
 ### CLEAN DATA
@@ -81,12 +81,13 @@ rest_habits <- rest_habits_raw %>%
   select(age:`mentalHealth _4`)
 ```
 
-**TO DO** remove blank observations?
-
-- removed first row of questions
+- removed first 2 rows & blank observations
 
 ```{r remove first row}
-rest_habits <- rest_habits [-c(1),]
+rest_habits <- rest_habits [-c(1,2),]
+
+rest_habits <- rest_habits %>% 
+  filter(!is.na(sex))
 ```
 
 - renaming
@@ -119,12 +120,12 @@ gradCat <- rest_habits %>%
 
 gradCat %>%
   mutate(category = case_when(
-     grad %in% c("Communications", "Business Administration") ~ "busLeg", #Business & Legal
+     grad %in% c("Communications", "Business Administration", "Criminal Justice") ~ "busLeg", #Business & Legal
      grad == "" ~ "cultHum", #Cultures and Humanities
      grad == "" ~ "science", #Biological, Environmental, and Physical Sciences
-     grad %in% c("Education", "Higher Education") ~ "education", #Education
+     grad %in% c("Education", "Higher Education", "School Psychology") ~ "education", #Education
      grad == "" ~ "art", #Fine Arts and Design
-     grad %in% c("Physician Assistant Studies", "Medical Dosimetry", "Public Health", "Physical Therapy") ~ "health", #Health and Medicine
+     grad %in% c("Physician Assistant Studies", "Medical Dosimetry", "Public Health", "Physical Therapy", "Nursing") ~ "health", #Health and Medicine
      grad %in% c("Biostatistics", "Data Science and Analytics") ~ "mathEng", #Math and Engineering
      grad %in% c("Speech-Language Pathology", "Social Work") ~ "socBehave")#Social and Behavioral Sciences)
   )
@@ -206,7 +207,6 @@ ggplot(rest_habits, aes(x=degree)) +
 
 ```{r bar chart concentration}
 rest_habits %>% 
-  mutate(concentration = factor(concentration, levels = level_acad)) %>% 
   ggplot(aes(x=concentration)) + 
   geom_bar() +
   coord_flip()
@@ -215,7 +215,8 @@ rest_habits %>%
 
 ```{r bar chart energy vs sleep dur.}
  rest_habits %>% 
-            filter(!is.na(sleepDuration)) %>% 
+  filter(!is.na(sleepDuration)) %>%
+  filter(!is.na(energy)) %>%
             ggplot(aes(x = energy, fill = sleepDuration)) + 
             geom_bar(position = "dodge")
 ```
