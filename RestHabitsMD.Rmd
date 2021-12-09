@@ -17,6 +17,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(knitr)
 library(ggmosaic)
+library(stringr)
 ```
 
 **reading in data**
@@ -112,39 +113,31 @@ rest_habits$age <- as.numeric(rest_habits$age)
 
 ```{r group majors}
 #should I instead add categories to new column within rest habits?
-# 
-# rest_habits$category <- rest_habits %>%
-#   add_column(category = NA)
+
+rest_habits$category <- rest_habits %>%
+   add_column(category = NA)
 
 rest_habits <- rest_habits %>%
   mutate(category = case_when(
      grad %in% c("Communications", "Business Administration", "Criminal Justice") ~ "busLeg", #Business & Legal
+     undergrad %in% c("Marketing", "Accounting", "Finance", "International Business", "Advertising and Public Relations", "General Business", "Management", "Hospitality and Tourism Management", "Human Resource Management", "Communication Studies", "Criminal Justice", "Legal Studies") ~ "busLeg",
      grad == "" ~ "cultHum", #Cultures and Humanities
+     undergrad %in% c("French", "Spanish", "History", "English", "Writing") ~ "cultHum",
      grad == "" ~ "science", #Biological, Environmental, and Physical Sciences
+     undergrad %in% c("Biology"),  ~ "science",
      grad %in% c("Education", "Higher Education", "School Psychology") ~ "education", #Education
+     undergrad %in% c("Education", "Higher Education", "School Psychology", "Art Education") ~ "education",
      grad == "" ~ "art", #Fine Arts and Design
+     undergrad %in% c("Film and Video", "Multimedia Journalism") ~ "art",
      grad %in% c("Physician Assistant Studies", "Medical Dosimetry", "Public Health", "Physical Therapy", "Nursing") ~ "health", #Health and Medicine
+     undergrad %in% c("Physician Assistant Studies", "Medical Dosimetry", "Public Health", "Physical Therapy", "Nursing") ~ "health",
      grad %in% c("Biostatistics", "Data Science and Analytics") ~ "mathEng", #Math and Engineering
-     grad %in% c("Speech-Language Pathology", "Social Work") ~ "socBehave")#Social and Behavioral Sciences)
+     undergrad %in% c("Biostatistics", "Data Science and Analytics") ~ "mathEng",
+     grad %in% c("Speech-Language Pathology", "Social Work") ~ "socBehave", #Social and Behavioral Sciences
+     undergrad %in% c("Speech-Language Pathology", "Social Work") ~ "socBehave",
+     )
   )
 ```
-
-```{r}
-rest_habits <- rest_habits %>%
-  mutate(category = case_when(
-    undergrad %in% c("Marketing", "Accounting", "Finance", "International Business", "Advertising and Public Relations", "General Business",
-                     "Management", "Hospitality and Tourism Management", "Human Resource Management", "Communication Studies",
-                     "Criminal Justice", "Legal Studies") ~ "busLeg", #Business & Legal
-    undergrad %in% c("French", "Spanish", "History", "English", "Writing") ~ "cultHum", #Cultures and Humanities
-    undergrad == "Biology",  ~ "science", #Biological, Environmental, and Physical Sciences
-    undergrad %in% c("Education", "Higher Education", "School Psychology") ~ "education", #Education
-    undergrad == "" ~ "art", #Fine Arts and Design
-    undergrad %in% c("Physician Assistant Studies", "Medical Dosimetry", "Public Health", "Physical Therapy", "Nursing") ~ "health", #Health and Medicine
-    undergrad %in% c("Biostatistics", "Data Science and Analytics") ~ "mathEng", #Math and Engineering
-    undergrad %in% c("Speech-Language Pathology", "Social Work") ~ "socBehave")#Social and Behavioral Sciences)
-  )
-```
-
 
 
 ```{r define levels}
@@ -254,6 +247,17 @@ rest_habits %>%
   geom_mosaic(aes(x=product(leisureTime, socMedDuration), fill=leisureTime)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
+
+```{r}
+rest_habits %>% 
+  filter(!is.na(socMedDuration)) %>% 
+  filter(!is.na(leisureFreq)) %>% 
+  mutate(leisureFreq = str_wrap(leisureFreq, width = 20)) %>% 
+  ggplot() +
+  geom_mosaic(aes(x=product(leisureFreq, socMedDuration), fill=leisureFreq)) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
 
 
 ### QUESTIONS
