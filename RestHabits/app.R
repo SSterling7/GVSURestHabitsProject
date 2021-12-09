@@ -20,6 +20,8 @@ ui <- fluidPage(
     mainPanel(
         tabsetPanel(
             id = "tabset",
+            tabPanel("Summary"),
+            
             tabPanel("Demographics",
                      sidebarPanel(
                          selectInput(
@@ -83,17 +85,21 @@ ui <- fluidPage(
             
             tabPanel("Leisure Time", 
                      fluidRow(
-                         column(12, "majors vs leisure time")
-                     ),
-                     fluidRow(
-                         column(12, "leisure time vs gpa")
-                     ),
-                     fluidRow(
-                         column(12, "leisure time vs social media")
+                         mainPanel(plotOutput("lt_socMedia")),
                      ),
                      
                      fluidRow(
-                         column(12, "soc media vs gpa")
+                         sidebarPanel(
+                             selectInput(
+                                 inputId = "lt",
+                                 label = "Select question:",
+                                 choices = c(
+                                     "Leisure Time vs GPA" = "leisureTime",
+                                     "Social Media Use vs GPA" = "socMedDuration"),
+                                 selected = "leisureTime"
+                             ),
+                         ),
+                         mainPanel(plotOutput("lt_gpa")),
                      ),
             ),
             
@@ -102,7 +108,7 @@ ui <- fluidPage(
                          column(12, "oh probs move questions between majors here")
                      ),
                      fluidRow(
-                         column(12, "hi")
+                         column(12, "ltvsmajors, gpavsmajors,wordcloud majors, acadvsmajors")
                      ),
             )
             ),
@@ -116,10 +122,11 @@ server <- function(input, output, session) {
     })
     
     output$barChartDem <- renderPlot({
-        ggplot(rest_habits, aes_string(x=input$x)) + 
+        ggplot(rest_habits, aes_string(x=input$x, fill=input$x)) + 
             geom_bar() +
             labs(title="Who responded to our survey?", y="Number of Responses") +
-            geom_text(aes(label=..count..), stat="count", vjust = -0.2)  
+            geom_text(aes(label=..count..), stat="count", vjust = -0.2) +
+            theme(axis.text.x = element_text(angle = 45, hjust = 1))
             #coord_flip()
     })
     
@@ -151,28 +158,30 @@ server <- function(input, output, session) {
             filter(!is.na(academics)) %>% 
             filter(!is.na(allNighter)) %>% 
             ggplot() +
-            geom_mosaic(aes(x=product(allNighter, academics), fill=allNighter))
+            geom_mosaic(aes(x=product(allNighter, academics), fill=allNighter)) +
+            theme(axis.text.x = element_text(angle = 45, hjust = 1))
+    })
+    
+    output$lt_socMedia <- renderPlot({
+        rest_habits %>% 
+            filter(!is.na(socMedDuration)) %>% 
+            ggplot() +
+            geom_mosaic(aes(x=product(leisureTime, socMedDuration), fill=leisureTime)) +
+            theme(axis.text.x = element_text(angle = 45, hjust = 1))
+    })
+    
+    output$lt_gpa <- renderPlot({
+        rest_habits %>% 
+            filter(!is.na(gpa)) %>% 
+            filter(!is.na(input$lt)) %>% 
+            ggplot(aes_string(x = input$lt, y = "gpa", fill=input$lt)) + 
+            geom_boxplot() +
+            stat_summary(fun=mean, geom="point", shape=20, size=8, color="grey", fill="grey")
     })
 }
 
 # Run app
 shinyApp(ui = ui, server = server)
-
-# sidebarPanel(
-#     selectInput(
-#         inputId = "x",
-#         label = "Select question:",
-#         choices = c(
-#             "How would you describe your energy levels?" = "energy",
-#             "How would you describe your stress levels?" = "stress",
-#             "How would you describe your ability to concentrate?" = "concentration",
-#             "How would you describe your overall mood?" = "mood",
-#             "How do you feel you are doing academically?" = "academics"
-#         ),
-#         selected = "stress"
-#     ),
-# ),
-# mainPanel(plotOutput("barChart"))
 
 
 
