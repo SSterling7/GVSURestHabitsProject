@@ -111,32 +111,49 @@ rest_habits$age <- as.numeric(rest_habits$age)
 ```
 
 
-```{r group majors}
+```{r making category column}
 #should I instead add categories to new column within rest habits?
 
 rest_habits$category <- rest_habits %>%
-   add_column(category = NA)
+    add_column(category = NA)
+```
 
+
+```{r group majors into category}
 rest_habits <- rest_habits %>%
-  mutate(category = case_when(
-     grad %in% c("Communications", "Business Administration", "Criminal Justice") ~ "busLeg", #Business & Legal
-     undergrad %in% c("Marketing", "Accounting", "Finance", "International Business", "Advertising and Public Relations", "General Business", "Management", "Hospitality and Tourism Management", "Human Resource Management", "Communication Studies", "Criminal Justice", "Legal Studies") ~ "busLeg",
-     grad == "" ~ "cultHum", #Cultures and Humanities
-     undergrad %in% c("French", "Spanish", "History", "English", "Writing") ~ "cultHum",
-     grad == "" ~ "science", #Biological, Environmental, and Physical Sciences
-     undergrad %in% c("Biology"),  ~ "science",
-     grad %in% c("Education", "Higher Education", "School Psychology") ~ "education", #Education
-     undergrad %in% c("Education", "Higher Education", "School Psychology", "Art Education") ~ "education",
-     grad == "" ~ "art", #Fine Arts and Design
-     undergrad %in% c("Film and Video", "Multimedia Journalism") ~ "art",
-     grad %in% c("Physician Assistant Studies", "Medical Dosimetry", "Public Health", "Physical Therapy", "Nursing") ~ "health", #Health and Medicine
-     undergrad %in% c("Physician Assistant Studies", "Medical Dosimetry", "Public Health", "Physical Therapy", "Nursing") ~ "health",
-     grad %in% c("Biostatistics", "Data Science and Analytics") ~ "mathEng", #Math and Engineering
-     undergrad %in% c("Biostatistics", "Data Science and Analytics") ~ "mathEng",
-     grad %in% c("Speech-Language Pathology", "Social Work") ~ "socBehave", #Social and Behavioral Sciences
-     undergrad %in% c("Speech-Language Pathology", "Social Work") ~ "socBehave",
+   mutate(category = case_when(
+   #Business & Legal
+   grad %in% c("Communications", "Business Administration", "Criminal Justice") ~ "business_legal",
+   #Cultures and Humanities
+   grad %in% c("") ~ "humanities",
+   #Biological, Environmental, and Physical Sciences
+   grad %in% c("Physics") ~ "science",
+   #Education
+   grad %in% c("Education", "Higher Education", "School Psychology") ~ "education",
+   #Fine Arts and Design
+   grad %in% ("") ~ "art",
+   #Health and Medicine
+   grad %in% c("Physician Assistant Studies", "Medical Dosimetry", "Public Health", "Physical Therapy", "Nursing") ~ "health",
+   #Math and Engineering
+   grad %in% c("Biostatistics", "Data Science and Analytics") ~ "math_engineering",
+   #Social and Behavioral Sciences
+   grad %in% c("Speech-Language Pathology", "Social Work") ~ "social",
+
+    undergrad %in% c("Marketing", "Accounting", "Finance", "International Business", "Advertising and Public Relations", "Business, General", "Management", "Hospitality and Tourism Management", "Human Resource Management", "Communication Studies", "Criminal Justice", "Legal Studies", "Supply Chain Management") ~ "business_legal",
+    undergrad %in% c("French", "Spanish", "History", "English", "Writing", "Philosophy") ~ "humanities",
+    undergrad %in% c("Biology", "Biochemistry", "Cell and Molecular Biology", "Wildlife Biology", "Natural Resources Management", "Environmental and Sustainability Studies", "Applied Food and Nutrition")  ~ "science",
+    undergrad %in% c("Art Education") ~ "education",
+    undergrad %in% c("Film and Video", "Multimedia Journalism") ~ "art",
+    undergrad %in% c("Physician Assistant Studies", "Medical Dosimetry", "Public Health", "Physical Therapy", "Nursing", "Preprofessional Studies", "Exercise Science", "Allied Health Sciences", "Biomedical Sciences", "Radiation Therapy", "Recreational Therapy", "Health Information Management") ~ "health",
+    undergrad %in% c("Electrical Engineering", "Biostatistics", "Statistics", "Mathematics", "Biomedical Engineering", "Computer Science", "Cybersecurity") ~ "math_engineering",
+    undergrad %in% c("Speech-Language Pathology", "Social Work", "Psychology") ~ "social",
+
+     combined %in% c("Accounting") ~ "business_legal",
+     combined %in% c("Cell and Molecular Biology") ~ "science",
+   combined %in% c("Exercise Science and Athletic Training") ~ "health",
+     combined %in% c("Statistics", "Biostatistics", "Cybersecurity", "Statistics and Biostatistics") ~ "math_engineering"
      )
-  )
+   )
 ```
 
 
