@@ -13,11 +13,18 @@ knitr::opts_chunk$set(echo = TRUE)
 
 **load packages**
 
+```{r}
+require(devtools)
+install_github("lchiffon/wordcloud2")
+```
+
+
 ```{r load packages}
 library(tidyverse)
 library(knitr)
 library(ggmosaic)
 library(stringr)
+library(wordcloud2)
 ```
 
 **reading in data**
@@ -123,7 +130,7 @@ rest_habits$category <- rest_habits %>%
 rest_habits <- rest_habits %>%
    mutate(category = case_when(
    #Business & Legal
-   grad %in% c("Communications", "Business Administration", "Criminal Justice") ~ "business_legal",
+   grad %in% c("Communications", "Business Administration", "Criminal Justice") ~ "businessLegal",
    #Cultures and Humanities
    grad %in% c("") ~ "humanities",
    #Biological, Environmental, and Physical Sciences
@@ -135,23 +142,23 @@ rest_habits <- rest_habits %>%
    #Health and Medicine
    grad %in% c("Physician Assistant Studies", "Medical Dosimetry", "Public Health", "Physical Therapy", "Nursing") ~ "health",
    #Math and Engineering
-   grad %in% c("Biostatistics", "Data Science and Analytics") ~ "math_engineering",
+   grad %in% c("Biostatistics", "Data Science and Analytics") ~ "mathEngineering",
    #Social and Behavioral Sciences
    grad %in% c("Speech-Language Pathology", "Social Work") ~ "social",
 
-    undergrad %in% c("Marketing", "Accounting", "Finance", "International Business", "Advertising and Public Relations", "Business, General", "Management", "Hospitality and Tourism Management", "Human Resource Management", "Communication Studies", "Criminal Justice", "Legal Studies", "Supply Chain Management") ~ "business_legal",
+    undergrad %in% c("Marketing", "Accounting", "Finance", "International Business", "Advertising and Public Relations", "Business, General", "Management", "Hospitality and Tourism Management", "Human Resource Management", "Communication Studies", "Criminal Justice", "Legal Studies", "Supply Chain Management") ~ "businessLegal",
     undergrad %in% c("French", "Spanish", "History", "English", "Writing", "Philosophy") ~ "humanities",
     undergrad %in% c("Biology", "Biochemistry", "Cell and Molecular Biology", "Wildlife Biology", "Natural Resources Management", "Environmental and Sustainability Studies", "Applied Food and Nutrition")  ~ "science",
     undergrad %in% c("Art Education") ~ "education",
     undergrad %in% c("Film and Video", "Multimedia Journalism") ~ "art",
     undergrad %in% c("Physician Assistant Studies", "Medical Dosimetry", "Public Health", "Physical Therapy", "Nursing", "Preprofessional Studies", "Exercise Science", "Allied Health Sciences", "Biomedical Sciences", "Radiation Therapy", "Recreational Therapy", "Health Information Management") ~ "health",
-    undergrad %in% c("Electrical Engineering", "Biostatistics", "Statistics", "Mathematics", "Biomedical Engineering", "Computer Science", "Cybersecurity") ~ "math_engineering",
+    undergrad %in% c("Electrical Engineering", "Biostatistics", "Statistics", "Mathematics", "Biomedical Engineering", "Computer Science", "Cybersecurity") ~ "mathEngineering",
     undergrad %in% c("Speech-Language Pathology", "Social Work", "Psychology") ~ "social",
 
-     combined %in% c("Accounting") ~ "business_legal",
+     combined %in% c("Accounting") ~ "businessLegal",
      combined %in% c("Cell and Molecular Biology") ~ "science",
    combined %in% c("Exercise Science and Athletic Training") ~ "health",
-     combined %in% c("Statistics", "Biostatistics", "Cybersecurity", "Statistics and Biostatistics") ~ "math_engineering"
+     combined %in% c("Statistics", "Biostatistics", "Cybersecurity", "Statistics and Biostatistics") ~ "mathEngineering"
      )
    )
 ```
@@ -165,6 +172,8 @@ levels_acad = c('Bad', 'Not Good', 'Ok', 'Good', 'Great') # for acad & mental he
 levels_socMedDur = c('Less than 1 hour/day.', '1-3 hours/day.', '3-6 hours/day.', '6-9 hours/day.') # for duration of Social Media
 
 levels_allNighter = c('No, never.', 'Yes, rarely.', 'Yes, I do it often.') # for all nighter
+
+levels_leisureFreq = c('I am too busy with school/work to have regular leisure time in my schedule.', 'I spend some time on personal activities a few times a week.', '1-3 hours/day.', '3-6 hours/day.', '6-9 hours/day.')
 ```
 
 
@@ -173,7 +182,8 @@ rest_habits <- rest_habits %>%
   mutate(sleepDuration = factor(sleepDuration, levels = levels_sleepDur)) %>% 
   mutate(across(c(academics, concentration, mood, stress, energy), ~factor(., levels = levels_acad))) %>% 
   mutate(socMedDuration = factor(socMedDuration, levels = levels_socMedDur)) %>% 
-  mutate(allNighter = factor(allNighter, levels = levels_allNighter))
+  mutate(allNighter = factor(allNighter, levels = levels_allNighter)) %>% 
+  mutate(leisureFreq = factor(leisureFreq, levels = levels_leisureFreq))
 ```
 
 *writing out cleaned dataset for shiny app*
@@ -273,6 +283,15 @@ rest_habits %>%
   ggplot() +
   geom_mosaic(aes(x=product(leisureFreq, socMedDuration), fill=leisureFreq)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+```{r}
+rest_habits %>% 
+  filter(!is.na(category)) %>% 
+  group_by(category) %>% 
+  summarize(count = n(),
+            wordFreq = count/129) %>% 
+  wordcloud2()
 ```
 
 

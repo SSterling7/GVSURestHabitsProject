@@ -8,6 +8,7 @@ library(ggplot2)
 library(dplyr)
 library(rsconnect) # ? needed
 library(ggmosaic)
+library(wordcloud2)
 
 # read in data
 rest_habits <- readRDS(here::here("RestHabits/shinydata.rds"))
@@ -94,9 +95,9 @@ ui <- fluidPage(
                                  inputId = "lt",
                                  label = "Select question:",
                                  choices = c(
-                                     "Leisure Time vs GPA" = "leisureTime",
+                                     "Frequency of Leisure Time vs GPA" = "leisureFreq",
                                      "Social Media Use vs GPA" = "socMedDuration"),
-                                 selected = "leisureTime"
+                                 selected = "leisureFreq"
                              ),
                          ),
                          mainPanel(plotOutput("lt_gpa")),
@@ -105,7 +106,7 @@ ui <- fluidPage(
             
             tabPanel("Degree", # which majors sleep more, have better gpa, mental health, etc
                      fluidRow(
-                         column(12, "oh probs move questions between majors here")
+                         mainPanel(plotOutput("majorCloud"))
                      ),
                      fluidRow(
                          column(12, "ltvsmajors, gpavsmajors,wordcloud majors, acadvsmajors")
@@ -122,7 +123,10 @@ server <- function(input, output, session) {
     })
     
     output$barChartDem <- renderPlot({
-        ggplot(rest_habits, aes_string(x=input$x, fill=input$x)) + 
+        rest_habits %>% 
+            filter(!is.na(race)) %>% 
+            filter(!is.na(year)) %>% 
+        ggplot(aes_string(x=input$x, fill=input$x)) + 
             geom_bar() +
             labs(title="Who responded to our survey?", y="Number of Responses") +
             geom_text(aes(label=..count..), stat="count", vjust = -0.2) +
@@ -165,18 +169,31 @@ server <- function(input, output, session) {
     output$lt_socMedia <- renderPlot({
         rest_habits %>% 
             filter(!is.na(socMedDuration)) %>% 
+            filter(!is.na(leisureFreq)) %>% 
+            mutate(leisureFreq = str_wrap(leisureFreq, width = 20)) %>%  
             ggplot() +
-            geom_mosaic(aes(x=product(leisureTime, socMedDuration), fill=leisureTime)) +
+            geom_mosaic(aes(x=product(leisureFreq, socMedDuration), fill=leisureFreq)) +
             theme(axis.text.x = element_text(angle = 45, hjust = 1))
     })
     
     output$lt_gpa <- renderPlot({
         rest_habits %>% 
             filter(!is.na(gpa)) %>% 
-            filter(!is.na(input$lt)) %>% 
+            filter(!is.na(leisureFreq)) %>% 
+            filter(!is.na(socMedDuration)) %>% 
+            mutate(leisureFreq = str_wrap(leisureFreq, width = 20)) %>% 
             ggplot(aes_string(x = input$lt, y = "gpa", fill=input$lt)) + 
             geom_boxplot() +
             stat_summary(fun=mean, geom="point", shape=20, size=8, color="grey", fill="grey")
+    })
+    
+    output$majorCloud <- renderPlot({
+        rest_habits %>% 
+            filter(!is.na(category)) %>% 
+            group_by(category) %>% 
+            summarize(count = n(),
+                      wordFreq = count/129) %>% 
+            wordcloud2()
     })
 }
 
