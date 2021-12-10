@@ -9,20 +9,38 @@ library(dplyr)
 library(rsconnect) # ? needed
 library(ggmosaic)
 library(wordcloud2)
+library(shinythemes)
 
 # read in data
 rest_habits <- readRDS(here::here("RestHabits/shinydata.rds"))
 
 # Define UI
 ui <- fluidPage(
+    theme = shinytheme("journal"),
     # Application title
     titlePanel("Rest Habits at GVSU"),
     # Plot bar chart
     mainPanel(
         tabsetPanel(
             id = "tabset",
-            tabPanel("Summary"),
-            
+            tabPanel("Summary",
+                     mainPanel(h4("STA 418/518 Final Project: Rest Habits at GVSU", align="center"),
+                               h4("Stella Sterling & Lauren Proctor", align="center"),
+                               p(em("Investigating the rest habits of GVSU students and how it relates 
+                                 to overall wellbeing and academic performance."), align = "center"),
+                               p("Inspired by the Press Pause campaign; part of GVSU Recreation & Wellness’s WIT program. 
+                               Press Pause explores vital areas of rest and strives to help students gain healthy rest habits. 
+                               Researching student rest habits will help the Welness Information Team gain a better 
+                                 understanding of how GVSU students prioritize and utilize rest."),
+                               br(),
+                               p("Check out ", a("Press Pause", href = "https://www.gvsu.edu/studentwellness/press-pause-59.htm"),
+                                 " to learn more about the campaign and for information on how you can improve your rest habits!"),
+                               br(),
+                               h5("Survey"),
+                               h6("Overview of Variables")
+                               
+                               )
+                     ),
             tabPanel("Demographics",
                      sidebarPanel(
                          selectInput(
@@ -106,7 +124,8 @@ ui <- fluidPage(
             
             tabPanel("Degree", # which majors sleep more, have better gpa, mental health, etc
                      fluidRow(
-                         mainPanel(plotOutput("majorCloud"))
+                         column(8, wordcloud2Output("majorCloud")),
+                         column(4, "hello")
                      ),
                      fluidRow(
                          column(12, "ltvsmajors, gpavsmajors,wordcloud majors, acadvsmajors")
@@ -187,13 +206,13 @@ server <- function(input, output, session) {
             stat_summary(fun=mean, geom="point", shape=20, size=8, color="grey", fill="grey")
     })
     
-    output$majorCloud <- renderPlot({
+    output$majorCloud <- renderWordcloud2({
         rest_habits %>% 
             filter(!is.na(category)) %>% 
             group_by(category) %>% 
             summarize(count = n(),
                       wordFreq = count/129) %>% 
-            wordcloud2()
+            wordcloud2(size=.5)
     })
 }
 

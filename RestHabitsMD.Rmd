@@ -291,7 +291,7 @@ rest_habits %>%
   group_by(category) %>% 
   summarize(count = n(),
             wordFreq = count/129) %>% 
-  wordcloud2()
+  wordcloud2(size=.5)
 ```
 
 
