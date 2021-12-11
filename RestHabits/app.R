@@ -3,7 +3,7 @@
 # https://shiny.rstudio.com/gallery/
 
 # load packages
-library(shiny)
+#library(shiny)
 library(ggplot2)
 library(dplyr)
 library(rsconnect) # ? needed
@@ -36,8 +36,7 @@ ui <- fluidPage(
                                p("Check out ", a("Press Pause", href = "https://www.gvsu.edu/studentwellness/press-pause-59.htm"),
                                  " to learn more about the campaign and for information on how you can improve your rest habits!"),
                                br(),
-                               h5("Survey"),
-                               h6("Overview of Variables")
+                               h5("Survey")
                      ),
             ),
             
@@ -129,12 +128,28 @@ ui <- fluidPage(
                                   mainPanel(wordcloud2Output("majorCloud")),
                                   ),
                               fluidRow(
-                                  mainPanel(p("With great diversity of majors and since GVSU's colleges weren't as informative 
+                                  mainPanel(p("With great diversity of majors and since GVSU's colleges weren't as informative, 
                                            we decided to sort majors into groups of our own making."),
+                                            br(),
                                          p(strong("Here are examples of each group: ")),
-                                         p("businessLegal: ", em("business, management, and legal related fields. (Hospitality and 
-                                           Tourism Management; Accounting; Criminal Justice")),
-                                         p("humanities: ", em(""))
+                                         p("businessLegal: ", em("Business, management, and legal related fields. (Hospitality and 
+                                                                 Tourism Management; Accounting; Criminal Justice)")),
+                                         p("humanities: ", em("Cultures and humanities. (French; History; Philosophy)")),
+                                         p("science: ", em("Biological, environmental and physical sciences. (Physics; Cell and 
+                                                           Molecular Biology; Environmental and Sustainability Studies)")),
+                                         p("education: ", em("Education related fields. (Higher Education; School Psychology; Art 
+                                                             Education")),
+                                         p("art: ", em("Fine arts and design. (Film and Video)")),
+                                         p("health: ", em("Health and medicine. (Nursing; Biomedical Sciences; Exercise Science")),
+                                         p("mathEngineering: ", em("Mathmatical, engineering, and other tech-related fields. 
+                                                                   (Statistics; Electrical Engineering; Computer Science)")),
+                                         p("social: ", em("Social and behavioural sciences. (Speech-Language Pathology; Social 
+                                                          Work; Psychology")),
+                                         br(),
+                                         p("Some responses were not sorted into groups. These included student-initiated majors
+                                           and those who had more than one major. For the former it would have been smart to 
+                                           ask which field the student-initiated major belonged to during the survey step. The second 
+                                           issue is something that we plan to adapt to in the future.")
                                          )
                               ),
                               fluidRow(
@@ -171,7 +186,7 @@ server <- function(input, output, session) {
         rest_habits %>% 
             filter(!is.na(gpa)) %>% 
             ggplot(aes(x=gpa)) + 
-            geom_histogram(fill="lightcoral") +
+            geom_histogram(color="black", fill="lightcoral") +
             geom_vline(aes(xintercept = mean(gpa)), linetype="dashed")
     })
     

@@ -13,12 +13,6 @@ knitr::opts_chunk$set(echo = TRUE)
 
 **load packages**
 
-```{r}
-require(devtools)
-install_github("lchiffon/wordcloud2")
-```
-
-
 ```{r load packages}
 library(tidyverse)
 library(knitr)
@@ -119,8 +113,6 @@ rest_habits$age <- as.numeric(rest_habits$age)
 
 
 ```{r making category column}
-#should I instead add categories to new column within rest habits?
-
 rest_habits$category <- rest_habits %>%
     add_column(category = NA)
 ```
@@ -357,29 +349,6 @@ analysis? https://scc.ms.unimelb.edu.au/resources-list/simple-r-scripts-for-anal
 themes https://ggplot2.tidyverse.org/reference/ggtheme.html
 
 
-###  RANDOM BRAINSTORM
-
-- change outlier, color, shape, size
-
-ggplot(rest_habits, aes(x=***, y=***)) +
-  geom_boxplot(outlier.colour="red", outlier.shape=8, outlier.size=4)
-
-- change box plot line colors by groups
-
-p <- ggplot(rest_habits, aes(x=***, y=***, color=***)) +
-  geom_boxplot()
-  
-- use custom color palettes
-
-p+scale_color_manual(values=c("#999999", "#E69F00", "#56B4E9"))
-
-- boxplot
-
-bp + scale_fill_brewer(palette="Dark2")
-
-- Scatter plot
-
-sp + scale_color_brewer(palette="Dark2")
 
 data <- tibble (
   q1 = sample(n, c(...)) run simulations to make fake 
