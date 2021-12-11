@@ -126,8 +126,16 @@ ui <- fluidPage(
                      
                      tabPanel("Degree", # which majors sleep more, have better gpa, mental health, etc
                               fluidRow(
-                                  column(8, wordcloud2Output("majorCloud")),
-                                  column(4, "hello")
+                                  mainPanel(wordcloud2Output("majorCloud")),
+                                  ),
+                              fluidRow(
+                                  mainPanel(p("With great diversity of majors and since GVSU's colleges weren't as informative 
+                                           we decided to sort majors into groups of our own making."),
+                                         p(strong("Here are examples of each group: ")),
+                                         p("businessLegal: ", em("business, management, and legal related fields. (Hospitality and 
+                                           Tourism Management; Accounting; Criminal Justice")),
+                                         p("humanities: ", em(""))
+                                         )
                               ),
                               fluidRow(
                                   mainPanel(plotOutput("sleepMajor"))
@@ -234,7 +242,7 @@ server <- function(input, output, session) {
             group_by(category) %>% 
             summarize(count = n(),
                       wordFreq = count/129) %>% 
-            wordcloud2(size=.5)
+            wordcloud2(size=.4)
     })
     
     output$sleepMajor <- renderPlot({
