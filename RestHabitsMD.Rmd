@@ -173,7 +173,7 @@ levels_socMedDur = c('Less than 1 hour/day.', '1-3 hours/day.', '3-6 hours/day.'
 
 levels_allNighter = c('No, never.', 'Yes, rarely.', 'Yes, I do it often.') # for all nighter
 
-levels_leisureFreq = c('I am too busy with school/work to have regular leisure time in my schedule.', 'I spend some time on personal activities a few times a week.', '1-3 hours/day.', '3-6 hours/day.', '6-9 hours/day.')
+levels_leisureFreq = c('I am too busy with school/work to have regular leisure time in my schedule.', 'I spend some time on personal activities a few times a week.', '1-3 hours/day.', '3-6 hours/day.')
 ```
 
 
@@ -198,9 +198,9 @@ readr::write_rds(rest_habits, here::here("RestHabits", "shinydata.rds"))
 ```{r gpa histogram}
 rest_habits %>% 
   filter(!is.na(gpa)) %>% 
-  filter(!is.na(leisureTime)) %>% 
-  ggplot(aes(x=gpa, fill=leisureTime)) + 
-  geom_histogram()
+  ggplot(aes(x=gpa)) + 
+  geom_histogram(fill="lightcoral") +
+  geom_vline(aes(xintercept = mean(gpa)), linetype="dashed")
 ```
 
 **TO DO** what vars do we want 4 realsies?
@@ -294,6 +294,25 @@ rest_habits %>%
   wordcloud2(size=.5)
 ```
 
+
+```{r sleep vs major}
+rest_habits %>% 
+  filter(!is.na(category)) %>% 
+  filter(!is.na(sleepDuration)) %>% 
+  ggplot() +
+  geom_mosaic(aes(x=product(sleepDuration, category), fill=sleepDuration)) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+```{r gpa vs major}
+rest_habits %>% 
+  filter(!is.na(gpa)) %>% 
+  filter(!is.na(category)) %>% 
+  ggplot(aes(x=category, y=gpa, fill=category)) + 
+  geom_boxplot() +
+  stat_summary(fun=mean, geom="point", shape=20, size=4, color="grey", fill="grey") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
 
 
 ### QUESTIONS

@@ -38,99 +38,105 @@ ui <- fluidPage(
                                br(),
                                h5("Survey"),
                                h6("Overview of Variables")
-                               
-                               )
-                     ),
-            tabPanel("Demographics",
-                     sidebarPanel(
-                         selectInput(
-                             inputId = "x",
-                             label = "Select demographic:",
-                             choices = c(
-                                 "age",
-                                 "sex",
-                                 "race",
-                                 "year",
-                                 "degree"),
-                             selected = "age"
-                             ),
-                         ),
-                     mainPanel(plotOutput("barChartDem")),
-                     ),
-            
-            tabPanel("Sleep",
-                     fluidRow(
-                         mainPanel(plotOutput("sleepDur_enough")),
-                     ),
-                     fluidRow(
-                         sidebarPanel(
-                             selectInput(
-                                 inputId = "z",
-                                 label = "Select question:",
-                                 choices = c(
-                                     "How would you describe your energy levels?" = "energy",
-                                     "How would you describe your stress levels?" = "stress",
-                                     "How would you describe your ability to concentrate?" = "concentration",
-                                     "How would you describe your overall mood?" = "mood",
-                                     "How do you feel you are doing academically?" = "academics"),
-                                 selected = "energy"
-                             ),
-                         ),
-                         mainPanel(plotOutput("SleepDur_healthAcad")),
-                     ),
-                     
-                     fluidRow(
-                         sidebarPanel(
-                             selectInput(
-                                 inputId = "y",
-                                 label = "Select question:",
-                                 choices = c(
-                                     "How would you describe your energy levels?" = "energy",
-                                     "How would you describe your stress levels?" = "stress",
-                                     "How would you describe your ability to concentrate?" = "concentration",
-                                     "How would you describe your overall mood?" = "mood",
-                                     "How do you feel you are doing academically?" = "academics"),
-                                 selected = "energy"
-                             ),
-                         ),
-                         mainPanel(plotOutput("Nap_healthAcad")),
-                     ),
-                         
-                    
-                     fluidRow(
-                         mainPanel(plotOutput("AllNighter_Acad")),
-                     )
-                     ),
-            
-            tabPanel("Leisure Time", 
-                     fluidRow(
-                         mainPanel(plotOutput("lt_socMedia")),
-                     ),
-                     
-                     fluidRow(
-                         sidebarPanel(
-                             selectInput(
-                                 inputId = "lt",
-                                 label = "Select question:",
-                                 choices = c(
-                                     "Frequency of Leisure Time vs GPA" = "leisureFreq",
-                                     "Social Media Use vs GPA" = "socMedDuration"),
-                                 selected = "leisureFreq"
-                             ),
-                         ),
-                         mainPanel(plotOutput("lt_gpa")),
                      ),
             ),
             
-            tabPanel("Degree", # which majors sleep more, have better gpa, mental health, etc
+            tabPanel("Demographics",
                      fluidRow(
-                         column(8, wordcloud2Output("majorCloud")),
-                         column(4, "hello")
+                         sidebarPanel(
+                             selectInput(
+                                 inputId = "x",
+                                 label = "Select demographic:",
+                                 choices = c(
+                                     "age",
+                                     "sex",
+                                     "race",
+                                     "year",
+                                     "degree"),
+                                 selected = "age")
+                         ),
+                         mainPanel(plotOutput("barChartDem")),
                      ),
                      fluidRow(
-                         column(12, "ltvsmajors, gpavsmajors,wordcloud majors, acadvsmajors")
+                         mainPanel(plotOutput("histGPA")),
                      ),
-            )
+            ),
+                     
+                     tabPanel("Sleep",
+                              fluidRow(
+                                  mainPanel(plotOutput("sleepDur_enough")),
+                              ),
+                              fluidRow(
+                                  sidebarPanel(
+                                      selectInput(
+                                          inputId = "z",
+                                          label = "Select question to compare to duration of sleep:",
+                                          choices = c(
+                                              "How would you describe your energy levels?" = "energy",
+                                              "How would you describe your stress levels?" = "stress",
+                                              "How would you describe your ability to concentrate?" = "concentration",
+                                              "How would you describe your overall mood?" = "mood",
+                                              "How do you feel you are doing academically?" = "academics"),
+                                          selected = "energy"
+                                      ),
+                                  ),
+                                  mainPanel(plotOutput("SleepDur_healthAcad")),
+                              ),
+                              fluidRow(
+                                  sidebarPanel(
+                                      selectInput(
+                                          inputId = "y",
+                                          label = "Select question to compare to frequency of naps:",
+                                          choices = c(
+                                              "How would you describe your energy levels?" = "energy",
+                                              "How would you describe your stress levels?" = "stress",
+                                              "How would you describe your ability to concentrate?" = "concentration",
+                                              "How would you describe your overall mood?" = "mood",
+                                              "How do you feel you are doing academically?" = "academics"),
+                                          selected = "energy"
+                                      ),
+                                  ),
+                                  mainPanel(plotOutput("Nap_healthAcad")),
+                              ),
+                              fluidRow(
+                                  mainPanel(plotOutput("AllNighter_Acad")),
+                              )
+                              ),
+                     
+                     tabPanel("Leisure Time", 
+                              fluidRow(
+                                  column(5, plotOutput("ltYN_socMedia")),
+                                  column(7, plotOutput("lt_socMedia"))
+                              ),
+                              
+                              fluidRow(
+                                  sidebarPanel(
+                                      selectInput(
+                                          inputId = "lt",
+                                          label = "Select an option:",
+                                          choices = c(
+                                              "Frequency of Leisure Time vs GPA" = "leisureFreq",
+                                              "Social Media Use vs GPA" = "socMedDuration"),
+                                          selected = "leisureFreq"
+                                      ),
+                                  ),
+                                  mainPanel(plotOutput("lt_gpa")),
+                              ),
+                     ),
+                     
+                     tabPanel("Degree", # which majors sleep more, have better gpa, mental health, etc
+                              fluidRow(
+                                  column(8, wordcloud2Output("majorCloud")),
+                                  column(4, "hello")
+                              ),
+                              fluidRow(
+                                  mainPanel(plotOutput("sleepMajor"))
+                              ),
+                              fluidRow(
+                                  column(6, plotOutput("majorGPA")),
+                                  column(6, plotOutput("majorAcad"))
+                              )
+                     )
             ),
         )
     )
@@ -151,6 +157,14 @@ server <- function(input, output, session) {
             geom_text(aes(label=..count..), stat="count", vjust = -0.2) +
             theme(axis.text.x = element_text(angle = 45, hjust = 1))
             #coord_flip()
+    })
+    
+    output$histGPA <- renderPlot({
+        rest_habits %>% 
+            filter(!is.na(gpa)) %>% 
+            ggplot(aes(x=gpa)) + 
+            geom_histogram(fill="lightcoral") +
+            geom_vline(aes(xintercept = mean(gpa)), linetype="dashed")
     })
     
     output$sleepDur_enough <- renderPlot({
@@ -185,6 +199,14 @@ server <- function(input, output, session) {
             theme(axis.text.x = element_text(angle = 45, hjust = 1))
     })
     
+    output$ltYN_socMedia <- renderPlot({
+        rest_habits %>% 
+            filter(!is.na(socMedDuration)) %>% 
+            filter(!is.na(leisureTime)) %>% 
+            ggplot() +
+            geom_mosaic(aes(x=product(leisureTime, socMedDuration), fill=leisureTime)) +
+            theme(axis.text.x = element_text(angle = 45, hjust = 1))
+    })
     output$lt_socMedia <- renderPlot({
         rest_habits %>% 
             filter(!is.na(socMedDuration)) %>% 
@@ -213,6 +235,34 @@ server <- function(input, output, session) {
             summarize(count = n(),
                       wordFreq = count/129) %>% 
             wordcloud2(size=.5)
+    })
+    
+    output$sleepMajor <- renderPlot({
+        rest_habits %>% 
+            filter(!is.na(category)) %>% 
+            filter(!is.na(sleepDuration)) %>% 
+            ggplot() +
+            geom_mosaic(aes(x=product(sleepDuration, category), fill=sleepDuration)) +
+            theme(axis.text.x = element_text(angle = 45, hjust = 1))
+    })
+    
+    output$majorGPA <- renderPlot({
+        rest_habits %>% 
+            filter(!is.na(gpa)) %>% 
+            filter(!is.na(category)) %>% 
+            ggplot(aes(x=category, y=gpa, fill=category)) + 
+            geom_boxplot() +
+            stat_summary(fun=mean, geom="point", shape=20, size=4, color="grey", fill="grey") +
+            theme(axis.text.x = element_text(angle = 45, hjust = 1))
+    })
+    
+    output$majorAcad <- renderPlot({
+        rest_habits %>% 
+            filter(!is.na(category)) %>% 
+            filter(!is.na(academics)) %>% 
+            ggplot() +
+            geom_mosaic(aes(x=product(academics, category), fill=academics)) +
+            theme(axis.text.x = element_text(angle = 45, hjust = 1))
     })
 }
 
