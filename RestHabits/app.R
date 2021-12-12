@@ -12,7 +12,7 @@ library(wordcloud2)
 library(shinythemes)
 
 # read in data
-rest_habits <- readRDS(here::here("RestHabits/shinydata.rds"))
+rest_habits <- readRDS("data/shinydata.rds") # HAHA got eem doesn't like here::here
 
 # Define UI
 ui <- fluidPage(
