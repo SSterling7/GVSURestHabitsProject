@@ -29,29 +29,33 @@ ui <- fluidPage(
                                h4("Stella Sterling & Lauren Proctor", align="center"),
                                p(em("Investigating the rest habits of GVSU students and how it relates 
                                  to overall wellbeing and academic performance."), align = "center"),
-                               p("Inspired by the Press Pause campaign; part of GVSU Recreation & Wellness’s WIT program. 
-                               Press Pause explores vital areas of rest and strives to help students gain healthy rest habits. 
-                               Researching student rest habits will help the Welness Information Team gain a better 
-                                 understanding of how GVSU students prioritize and utilize rest."),
+                               p("Inspired by the Press Pause campaign; part of GVSU Recreation & Wellness’s WIT (Wellness 
+                               Information Team) program. Press Pause explores vital areas of rest and strives to help 
+                               students gain healthy rest habits. Researching student rest habits will help WIT gain a better 
+                               understanding of how GVSU students prioritize and utilize rest."),
                                br(),
                                p("Check out ", a("Press Pause", href = "https://www.gvsu.edu/studentwellness/press-pause-59.htm"),
                                  " to learn more about the campaign and for information on how you can improve your rest habits!"),
                                br(),
                                h5("Survey"),
-                               p("We created a survey to send to all GVSU students of age 18 years or older. We used the online 
-                                 software Qualtrics which allowed us to create our survey and send it out effectively. This survey 
-                                 contained a variety of questions to help investigate rest habits, including but not limited to questions such as:"),
+                               p("We created a survey to send to GVSU students of age 18 years or older. Using the online 
+                                 software Qualtrics we created and released our survey through an anonymous link, as well as 
+                                 reaching out to fellow classmates. We received over 170 responses."),
+                               p("This survey contained a variety of questions to help investigate rest habits, including 
+                                 but not limited to questions such as:"),
                                br(),
-                               p("-How many hours do you sleep each night?"),
-                               p("-How much leisure time do you have?"),
-                               p("-How do you think you are doing academically?"),
-                               p("-etc…"),
+                               p("- During a regular semester, how many hours do you sleep each night on average?"),
+                               p("- Do you have leisure time? In other words, do you spend time on activities not 
+                                 related to school or work (reading, drawing, watching TV, etc.)?"),
+                               p("- How do you feel you are doing academically?"),
                                br(),
-                               p("Through this survey, we created graphical representations to display major findings. All of this data is presented 
-                                 in an interactive web application for easy visualization.")
-                             
-                               
-
+                               p("Through data collected from this survey, we created graphical representations to display 
+                               major findings."),
+                               br(),
+                               h5("Contact Information"),
+                               p(em("Have questions? Feel free to reach out to us - ")),
+                               p("Stella Sterling: sterlste@mail.gvsu.edu"),
+                               p("Lauren Proctor: proctola@mail.gvsu.edu")
                      ),
             ),
             
@@ -79,6 +83,22 @@ ui <- fluidPage(
                      tabPanel("Sleep",
                               fluidRow(
                                   mainPanel(plotOutput("sleepDur_enough")),
+                              ),
+                              fluidRow(
+                                  sidebarPanel(
+                                      selectInput(
+                                          inputId = "sleepSched",
+                                          label = "Select question to compare to having a regular sleep schedule:",
+                                          choices = c(
+                                              "How would you describe your energy levels?" = "energy",
+                                              "How would you describe your stress levels?" = "stress",
+                                              "How would you describe your ability to concentrate?" = "concentration",
+                                              "How would you describe your overall mood?" = "mood",
+                                              "How do you feel you are doing academically?" = "academics"),
+                                          selected = "energy"
+                                      ),
+                                  ),
+                                  mainPanel(plotOutput("sleepSched_healthAcad")),
                               ),
                               fluidRow(
                                   sidebarPanel(
@@ -212,10 +232,18 @@ server <- function(input, output, session) {
             geom_mosaic(aes(x=product(sleepDuration, sleepEnough), fill=sleepDuration))
     })
     
+    output$sleepSched_healthAcad <- renderPlot({
+        rest_habits %>% 
+            filter(!is.na(regSleep)) %>% 
+            filter(!is.na(academics)) %>% 
+            ggplot(aes_string(x = input$sleepSched)) + 
+            geom_bar(aes(fill = regSleep), position = "dodge")
+    })
+    
     output$SleepDur_healthAcad <- renderPlot({
         rest_habits %>% 
             filter(!is.na(sleepDuration)) %>% 
-            filter(!is.na(input$z)) %>% 
+            filter(!is.na(academics)) %>% 
             ggplot(aes_string(x = input$z)) + 
             geom_bar(aes(fill = sleepDuration), position = "dodge")
     })

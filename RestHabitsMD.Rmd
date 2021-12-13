@@ -138,11 +138,11 @@ rest_habits <- rest_habits %>%
    #Social and Behavioral Sciences
    grad %in% c("Speech-Language Pathology", "Social Work") ~ "social",
 
-    undergrad %in% c("Marketing", "Accounting", "Finance", "International Business", "Advertising and Public Relations", "Business, General", "Management", "Hospitality and Tourism Management", "Human Resource Management", "Communication Studies", "Criminal Justice", "Legal Studies", "Supply Chain Management") ~ "businessLegal",
+    undergrad %in% c("Multimedia Journalism", "Marketing", "Accounting", "Finance", "International Business", "Advertising and Public Relations", "Business, General", "Management", "Hospitality and Tourism Management", "Human Resource Management", "Communication Studies", "Criminal Justice", "Legal Studies", "Supply Chain Management") ~ "businessLegal",
     undergrad %in% c("French", "Spanish", "History", "English", "Writing", "Philosophy") ~ "humanities",
     undergrad %in% c("Biology", "Biochemistry", "Cell and Molecular Biology", "Wildlife Biology", "Natural Resources Management", "Environmental and Sustainability Studies", "Applied Food and Nutrition")  ~ "science",
     undergrad %in% c("Art Education") ~ "education",
-    undergrad %in% c("Film and Video", "Multimedia Journalism") ~ "art",
+    undergrad %in% c("Film and Video") ~ "art",
     undergrad %in% c("Physician Assistant Studies", "Medical Dosimetry", "Public Health", "Physical Therapy", "Nursing", "Preprofessional Studies", "Exercise Science", "Allied Health Sciences", "Biomedical Sciences", "Radiation Therapy", "Recreational Therapy", "Health Information Management") ~ "health",
     undergrad %in% c("Electrical Engineering", "Biostatistics", "Statistics", "Mathematics", "Biomedical Engineering", "Computer Science", "Cybersecurity") ~ "mathEngineering",
     undergrad %in% c("Speech-Language Pathology", "Social Work", "Psychology") ~ "social",
