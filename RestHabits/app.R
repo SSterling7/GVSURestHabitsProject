@@ -37,7 +37,21 @@ ui <- fluidPage(
                                p("Check out ", a("Press Pause", href = "https://www.gvsu.edu/studentwellness/press-pause-59.htm"),
                                  " to learn more about the campaign and for information on how you can improve your rest habits!"),
                                br(),
-                               h5("Survey")
+                               h5("Survey"),
+                               p("We created a survey to send to all GVSU students of age 18 years or older. We used the online 
+                                 software Qualtrics which allowed us to create our survey and send it out effectively. This survey 
+                                 contained a variety of questions to help investigate rest habits, including but not limited to questions such as:"),
+                               br(),
+                               p("-How many hours do you sleep each night?"),
+                               p("-How much leisure time do you have?"),
+                               p("-How do you think you are doing academically?"),
+                               p("-etc…"),
+                               br(),
+                               p("Through this survey, we created graphical representations to display major findings. All of this data is presented 
+                                 in an interactive web application for easy visualization.")
+                             
+                               
+
                      ),
             ),
             

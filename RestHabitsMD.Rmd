@@ -181,7 +181,7 @@ rest_habits <- rest_habits %>%
 *writing out cleaned dataset for shiny app*
 
 ```{r output for shiny}
-readr::write_rds(rest_habits, here::here("RestHabits", "shinydata.rds"))
+readr::write_rds(rest_habits, here::here("RestHabits/data", "shinydata.rds"))
 ```
 
 
