@@ -10,6 +10,7 @@ library(rsconnect) # ? needed
 library(ggmosaic)
 library(wordcloud2)
 library(shinythemes)
+library(stringr)
 
 # read in data
 rest_habits <- readRDS("data/shinydata.rds") # HAHA got eem doesn't like here::here
