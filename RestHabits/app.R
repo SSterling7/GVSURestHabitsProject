@@ -139,8 +139,8 @@ ui <- fluidPage(
                      
                      tabPanel("Leisure Time", 
                               fluidRow(
-                                  column(5, plotOutput("ltYN_socMedia")),
-                                  column(7, plotOutput("lt_socMedia"))
+                                  column(6, plotOutput("ltYN_socMedia")),
+                                  column(6, plotOutput("lt_socMedia"))
                               ),
                               
                               fluidRow(
@@ -229,7 +229,8 @@ server <- function(input, output, session) {
         rest_habits %>% 
             filter(!is.na(sleepDuration)) %>% 
             ggplot() +
-            geom_mosaic(aes(x=product(sleepDuration, sleepEnough), fill=sleepDuration))
+            geom_mosaic(aes(x=product(sleepDuration, sleepEnough), fill=sleepDuration)) + 
+            theme(axis.text.y = element_blank())
     })
     
     output$sleepSched_healthAcad <- renderPlot({
@@ -262,7 +263,7 @@ server <- function(input, output, session) {
             filter(!is.na(allNighter)) %>% 
             ggplot() +
             geom_mosaic(aes(x=product(allNighter, academics), fill=allNighter)) +
-            theme(axis.text.x = element_text(angle = 45, hjust = 1))
+            theme(axis.text.x = element_text(angle = 45, hjust = 1), axis.text.y = element_blank())
     })
     
     output$ltYN_socMedia <- renderPlot({
@@ -271,7 +272,7 @@ server <- function(input, output, session) {
             filter(!is.na(leisureTime)) %>% 
             ggplot() +
             geom_mosaic(aes(x=product(leisureTime, socMedDuration), fill=leisureTime)) +
-            theme(axis.text.x = element_text(angle = 45, hjust = 1))
+            theme(axis.text.x = element_text(angle = 45, hjust = 1), axis.text.y = element_blank())
     })
     output$lt_socMedia <- renderPlot({
         rest_habits %>% 
@@ -280,7 +281,7 @@ server <- function(input, output, session) {
             mutate(leisureFreq = str_wrap(leisureFreq, width = 20)) %>%  
             ggplot() +
             geom_mosaic(aes(x=product(leisureFreq, socMedDuration), fill=leisureFreq)) +
-            theme(axis.text.x = element_text(angle = 45, hjust = 1))
+            theme(axis.text.x = element_text(angle = 45, hjust = 1), axis.text.y = element_blank())
     })
     
     output$lt_gpa <- renderPlot({
@@ -291,7 +292,8 @@ server <- function(input, output, session) {
             mutate(leisureFreq = str_wrap(leisureFreq, width = 20)) %>% 
             ggplot(aes_string(x = input$lt, y = "gpa", fill=input$lt)) + 
             geom_boxplot() +
-            stat_summary(fun=mean, geom="point", shape=20, size=8, color="grey", fill="grey")
+            stat_summary(fun=mean, geom="point", shape=20, size=8, color="grey", fill="grey") +
+            theme(legend.position = "none")
     })
     
     output$majorCloud <- renderWordcloud2({
@@ -309,7 +311,7 @@ server <- function(input, output, session) {
             filter(!is.na(sleepDuration)) %>% 
             ggplot() +
             geom_mosaic(aes(x=product(sleepDuration, category), fill=sleepDuration)) +
-            theme(axis.text.x = element_text(angle = 45, hjust = 1))
+            theme(axis.text.x = element_text(angle = 45, hjust = 1), axis.text.y = element_blank())
     })
     
     output$majorGPA <- renderPlot({
@@ -319,7 +321,7 @@ server <- function(input, output, session) {
             ggplot(aes(x=category, y=gpa, fill=category)) + 
             geom_boxplot() +
             stat_summary(fun=mean, geom="point", shape=20, size=4, color="grey", fill="grey") +
-            theme(axis.text.x = element_text(angle = 45, hjust = 1))
+            theme(axis.text.x = element_text(angle = 45, hjust = 1), legend.position = "none")
     })
     
     output$majorAcad <- renderPlot({
@@ -328,7 +330,7 @@ server <- function(input, output, session) {
             filter(!is.na(academics)) %>% 
             ggplot() +
             geom_mosaic(aes(x=product(academics, category), fill=academics)) +
-            theme(axis.text.x = element_text(angle = 45, hjust = 1))
+            theme(axis.text.x = element_text(angle = 45, hjust = 1), axis.text.y = element_blank())
     })
 }
 
